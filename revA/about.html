@@ -1,0 +1,120 @@
+<html>
+<head>
+
+	<title>TimDuffy.Me</title>
+
+	<link href="main.css" rel="stylesheet" type="text/css">
+
+	<link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+	<header id="header">
+		<div class="insideheader">
+			<div class="sitetitle">
+				TimDuffy.Me
+			</div>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="index.html">Home</a>
+					</li>
+					<li>
+						<a href="blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="http://mycodespace.net/">Projects</a>
+					</li>
+					<li>
+						<a href="about.html">About</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+	
+	<div class="main" id="main">
+		<div class="innermain" id="innermain">
+			<div class="section">
+				<div class="content" id="content">
+					Hello.  My name is Tim Duffy.<br>
+					<br>
+					I am, in no particular order, a technologist, a hacker, and maker, a geek, a Computer Engineer, a husband, inquisitive,
+					eager to learn new things, opinionated, currently living in up-state New York, and a passionate member of the Rochester, NY 
+					chapter of <a href="http://www.hackshackersroc.com/">Hacks and Hackers</a>.  I enjoy building things, fixing things, breaking things, and exploring things.  
+					I try to surround myself with good people.<br>
+					<br>
+					Thanks for visiting!<br>
+					<br>
+					You can contact me at <a href="mainto:tim@timduffy.me">tim@timduffy.me</a>.
+				</div>
+			</div>
+			<div class="sidebar" id="sidebar">
+				<div class="widget" id="calendarwidget">
+					<div class="widgettitle">Calendar Events</div>
+					<div id="calendarwidget">
+						
+						<!-- calendar events will go here -->
+						
+					</div>
+				</div>
+				<div class="widget" id="twitterwidget">
+					<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+					<script>
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+					</script>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer>
+	</footer>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script src="Markdown.Converter.js"></script>
+
+	<script>
+	
+		function loadcalendar()
+		{
+			$.getJSON('events.json', function(data) {
+                /*
+				 * data.error  [int]
+				 * data.events [array]
+				 * 
+				 *    event.date    [string]
+				 *    event.title   [string]
+				 *
+				 */
+				 
+				 if( data.error == 0 )
+				 {
+					for (var i = 0; i < data.events.length; i++) {
+						var eventhtml = "";
+						
+						eventhtml += '<div class="calendarevent">';
+						eventhtml += '<div class="calendardate">' + data.events[i].date + '</div>';
+						eventhtml += '<div class="calendareventtitle"><a href="' + data.events[0].url +'">' + data.events[i].title + '</a></div>';
+						eventhtml += '</div>';
+						
+						$("#calendarwidget").append(eventhtml);
+					}
+				 }
+            });
+		}
+		
+		function loadpage()
+		{
+			loadcalendar();
+		}
+	
+		loadpage();
+	
+	</script>
+
+</body>
+</html>

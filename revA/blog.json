@@ -1,0 +1,11 @@
+{
+	"error":0,
+	"posts":
+	[
+		{
+			"title":"My First Blog Post",
+			"postdt":"September 1st, 2013",
+			"content": "Well this is my first blog post on the new website.  I suppose I should take a moment to tell the story of how the site came to be.  I have a number of domains registered with [Name Cheap](http://namecheap.com \"Name Cheap\") so I find myself going to their website often.  Side note: I would highly recommend them as a registrar, they have been fantastic to me.  So a few weeks ago I went to their website and saw they had *.me domains for $0.99 for the first year, and you get an email address!  I figured, how could I not ...\n\nAfter registering timduffy.me, I put up a static html page that was simply:\n\n    \n\n      <html>\n      <body>\n        <center><h1>TimDuffy.Me</h1></center>\n      </body>\n      </html>\n    \n\nI know someone reading this just twitched when they read that center tag, :D.  I figured it was good enough since what I really wanted was the email address.\n\nAfter a few days (read: weeks) I figured I should probably get around to putting something more meaningful up on the site since I was giving my new email address out to people, I didn't want them to be disappointed when they went to the domain :p.\n\nI started down the path of trying to write a very simple CMS/Blog website using pyramid (a python web framework) that would be based around the blog being written in Markdown, and then rendered.  I needed to, however, come up to speed on a number of technologies before I could do this:  pyramid (and it's rendering engine), SQLAlchemy, and Markdown.  I dove in.  I got lost.  I gave up.\n\nSo what you are looking at here is flat html based website with some JQuery JavaScript that pulls blog posts from a json file that sits on the server (Apache2) - nothing fancy.  Feel free to take a look at the code here: [timduffy.me](https://github.com/thequbit/timduffy.me \"TimDuffy.me\").\n"
+		}
+	]
+}

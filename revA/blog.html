@@ -1,0 +1,146 @@
+<html>
+<head>
+
+	<title>TimDuffy.Me</title>
+
+	<link href="main.css" rel="stylesheet" type="text/css">
+
+	<link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+	<header id="header">
+		<div class="insideheader">
+			<div class="sitetitle">
+				TimDuffy.Me
+			</div>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="index.html">Home</a>
+					</li>
+					<li>
+						<a href="blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="http://mycodespace.net/">Projects</a>
+					</li>
+					<li>
+						<a href="about.html">About</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+	
+	<div class="main" id="main">
+		<div class="innermain" id="innermain">
+			<div class="section">
+				<div class="content" id="content">
+					<!-- blog posts wil go here-->
+				</div>
+			</div>
+			<div class="sidebar" id="sidebar">
+				<div class="widget" id="calendarwidget">
+					<div class="widgettitle">Calendar Events</div>
+					<div id="calendarwidget">
+						
+						<!-- calendar events will go here -->
+						
+					</div>
+				</div>
+				<div class="widget" id="twitterwidget">
+					<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+					<script>
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+					</script>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer>
+	</footer>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script src="Markdown.Converter.js"></script>
+
+	<script>
+	
+		function loadblog()
+		{
+			$.getJSON('blog.json', function(data) {
+                /*
+				 * data.error [int]
+				 * data.posts [array]
+				 * 
+				 *    post.title   [string]
+				 *    post.postdt  [string]
+				 *    post.content [string]
+				 *
+				 */
+				 
+				 if( data.error == 0 )
+				 {
+					for (var i = data.posts.length-1; i >= 0; i--) {
+						var posthtml = "";
+						
+						var converter = new Markdown.Converter();
+						
+						var c = converter.makeHtml(data.posts[i].content);
+						
+						posthtml += '<div class="post">';
+						posthtml += '<div class="posttitle">' + data.posts[i].title + '</div>';
+						posthtml += '<div class="postdt">Posted on ' + data.posts[i].postdt + '</div>';
+						posthtml += '<div class="postcontent">' + c + '</div>';
+						posthtml += '</div>';
+						
+						$("#content").append(posthtml);
+					}
+				 }
+            });
+		}
+		
+		function loadcalendar()
+		{
+			$.getJSON('events.json', function(data) {
+                /*
+				 * data.error  [int]
+				 * data.events [array]
+				 * 
+				 *    event.date    [string]
+				 *    event.title   [string]
+				 *
+				 */
+				 
+				 if( data.error == 0 )
+				 {
+					for (var i = 0; i < data.events.length; i++) {
+						var eventhtml = "";
+						
+						eventhtml += '<div class="calendarevent">';
+						eventhtml += '<div class="calendardate">' + data.events[i].date + '</div>';
+						eventhtml += '<div class="calendareventtitle"><a href="' + data.events[0].url +'">' + data.events[i].title + '</a></div>';
+						eventhtml += '</div>';
+						
+						$("#calendarwidget").append(eventhtml);
+					}
+				 }
+            });
+		}
+		
+		function loadpage()
+		{
+			loadblog();
+			loadcalendar();
+		}
+	
+		loadpage();
+	
+	</script>
+
+</body>
+</html>
