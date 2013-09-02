@@ -11,6 +11,7 @@ body {
 	font-family: 'Istok Web', sans-serif;
 	font-size: 16px;
 	line-height: normal;
+	display: block;
 }
 
 div {
@@ -26,14 +27,6 @@ pre {
 p {
 	padding-top: 4px;
 	padding-bottom: 4px;
-}
-
-ul {
-	
-}
-
-li {
-	
 }
 
 
@@ -218,4 +211,52 @@ div.postdt {
 div.postcontent {
 	padding-top: 8px;
 	padding-bottom: 8px;
+}
+
+/* -- Blog Editor -- */
+
+#blogeditor ul {
+	display: block;
+	list-style-type: disc;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	margin-left: 0px;
+	margin-right: 0px;
+	/* padding-left: 40px; */
+}
+
+#blogeditor li {
+	float: left;
+}
+
+.wmd-button > span {
+	background-image: url(wmd-buttons.png);
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	left: 0px;
+}
+
+.wmd-button {
+	list-style: none;
+	cursor: pointer;
+}
+
+.wmd-button-row {
+	position: relative;
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	margin-top: 10px;
+	padding: 0px;
+	height: 20px;
+}
+
+#wmd-input {
+	height: 300px;
+	width: 100%;
+	background-color: LightGray;
+	border: 1px solid DarkGray;
 }
