@@ -1,0 +1,138 @@
+<html>
+<head>
+
+    <title>TimDuffy.Me</title>
+
+    <link href="static/main.css" rel="stylesheet" type="text/css">
+
+    <link rel="shortcut icon" href="static/favicon.png" type="image/x-icon" />
+
+    <link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+    <header id="header">
+        <div class="insideheader">
+            <div class="sitetitle">
+                <a href="index.html">TimDuffy.Me</a>
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    <li>
+                        <a href="/blog">Blog</a>
+                    </li>
+                    <li>
+                        <a href="http://mycodespace.net/">Projects</a>
+                    </li>
+                    <li>
+                        <a href="/about">About</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <div class="main" id="main">
+        <div class="innermain" id="innermain">
+            <div class="section">
+                <div class="content" id="content">
+                    <div id="aboutlinks">
+                        Hi, I'm Tim Duffy.<br>
+                        <ul>
+                            <li>
+                                <a target="_blank" href="/blog">Blog</a>
+                            </li>
+                    
+                            <li>
+                                <a target="_blank" href="http://www.linkedin.com/profile/view?id=19365587">LinkedIn</a>
+                            </li>
+                        
+                            <li>
+                                <a target="_blank" href="https://www.github.com/thequbit">GitHub</a>
+                            </li>
+                        
+                            <li>
+                                <a target="_blank" href="https://coderwall.com/thequbit">CoderWall</a>
+                            </li>
+                        
+                            <li>
+                                <a target="_blank" href="https://twitter.com/arbiterofbits">Twitter</a>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar" id="sidebar">
+                <div class="widget" id="calendarwidget">
+                    <div class="widgettitle">Calendar Events</div>
+                    <div id="calendarwidget">
+                        
+                        <!-- calendar events will go here -->
+                        
+                    </div>
+                </div>
+                <div class="widget" id="twitterwidget">
+                    <a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+                    <script>
+                        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+                    </script>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+    </footer>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="static/Markdown.Converter.js"></script>
+
+    <script>
+    
+        function loadcalendar()
+        {
+            $.getJSON('events.json', function(data) {
+                /*
+                 * data.error  [int]
+                 * data.events [array]
+                 * 
+                 *    event.date    [string]
+                 *    event.title   [string]
+                 *
+                 */
+                 
+                 if( data.error == 0 )
+                 {
+                    for (var i = 0; i < data.events.length; i++) {
+                        var eventhtml = "";
+                        
+                        eventhtml += '<div class="calendarevent">';
+                        eventhtml += '<div class="calendardate">' + data.events[i].date + '</div>';
+                        eventhtml += '<div class="calendareventtitle"><a href="' + data.events[i].url +'">' + data.events[i].title + '</a></div>';
+                        eventhtml += '</div>';
+                        
+                        $("#calendarwidget").append(eventhtml);
+                    }
+                 }
+            });
+        }
+        
+        function loadpage()
+        {
+            loadcalendar();
+        }
+    
+        loadpage();
+    
+    </script>
+
+</body>
+</html>
+
