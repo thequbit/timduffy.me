@@ -22,6 +22,9 @@ pre {
 	padding-top: 5px;
 	padding-bottom: 5px;
 	font-size: 14px;
+	background: #2c3e50;
+	color: #cacccd;
+	border-radius: 2px 2px 2px 2px; 
 }
 
 p {
@@ -31,6 +34,11 @@ p {
 
 
 /* -- header -- */
+
+div.sitetitle a{
+	text-decoration: none;
+	color: #FFFFFF;
+}
 
 #header {
 	background: #474747;
@@ -64,7 +72,7 @@ p {
 	/* text-shadow: 0px -1px 0px #000; */
 	display: block;
 	padding: 4px;
-	
+	text-decoration: none;
 }
 
 div.insideheader {
@@ -195,13 +203,18 @@ div.calendareventtitle {
 /* -- Blog -- */
 
 div.post {
+    padding-left: 5px;
+	padding-right: 5px;
 	padding-top: 2px;
 	padding-bottom: 20px;
+	border: 1px solid #F8F8F8;
+	margin-bottom: 10px;
 }
 
 div.posttitle {
-	font-size: 20px;
+	font-size: 28px;
 	font-weight: bold;
+	color: Grey;
 }
 
 div.postdt {
@@ -211,6 +224,13 @@ div.postdt {
 div.postcontent {
 	padding-top: 8px;
 	padding-bottom: 8px;
+}
+
+div.postcontent li {
+	margin-top: 4px;
+	margin-bottom: 4px;
+	margin-left: 25px;
+	padding-left: 4px;
 }
 
 /* -- Blog Editor -- */
