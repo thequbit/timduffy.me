@@ -55,6 +55,11 @@
 Write your blog post here using MarkDown language.
 						</textarea>
 					</div>
+					<div>
+						<button onclick="showHTML()"></button>
+						<textarea class="wmd-input" id="htmloutput">
+						</textarea>
+					</div>
 				</div>
 			</div>
 			<div class="sidebar" id="sidebar">
@@ -115,6 +120,12 @@ Write your blog post here using MarkDown language.
             });
 		}
 		
+		function showHTML()
+		{
+			var html = $("#wmd-preview").html()
+			$("#outputhtml").val(html)
+		}
+
 		function loadeditor()
 		{
 			var converter = Markdown.getSanitizingConverter();
