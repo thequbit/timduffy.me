@@ -1,0 +1,112 @@
+<html>
+<head>
+
+	<title>TimDuffy.Me</title>
+
+	<link href="../css/main.css" rel="stylesheet" type="text/css">
+
+	<link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
+
+	<link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+	<div id="header">
+		<div class="insideheader">
+			<div class="sitetitle">
+				<a href="index.html">TimDuffy.Me</a>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="index.html">Home</a>
+					</li>
+					<li>
+						<a href="blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="http://mycodespace.net/">Projects</a>
+					</li>
+					<li>
+						<a href="about.html">About</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div class="main" id="main">
+		<div class="innermain" id="innermain">
+			<div class="section">
+				<div class="content" id="content">
+					<div class="post">
+						<div class="posttitle">Syracuse Hacks and Hackers Meetup</div>
+						<div class="postdatetime">September 5th, 2013</div>
+						<div class="keywords">Keywords: opensource, opendata, hackshackers, hhcuse, syracuse.com</div>
+						<div class="postcontent">
+
+<p>Yesterday, Wednesday 9/5/13, I joined a bunch of great people in Syracuse, NY at the new (at the time of this blog post) Syracuse Media Group ( operators of <a href="http://syracuse.com/">http://syracuse.com/</a> website ) for a Hacks and Hackers Syracuse Meet-Up.  The title of the Meet-Up was "Brainstorm Civic Data Projects", which I think we did!</p>
+
+<p>I was asked by Dan Pacheco, the founder of Hacks and Hackers Syracuse as well as the "Chair of Journalism Innovation at SU's Newhouse school" - taken from his meetup.com profile.</p>
+
+<h3>Cuse Data</h3>
+
+<p>Dan asked me to speak about some of the work I had done with some crime data that is posted with just a few days of delay to syrcuse.com.  You can checkout the live example <a href="http://mycodespace.net/projects/cusedata/" title="here">here</a>.  The data source can be found <a href="http://www.syracuse.com/crime/police-reports/" title="here">here</a>.  And, of course, the source code can be found <a href="https://github.com/thequbit/syracusedatascraper" title="here">here</a>.</p>
+
+<p>The original objective for this project was to pull in Onondaga County crime data, and overlay abandoned building locations - create some kind of heat map.  Unfortunately this project kind of got put on hold, but I would very much so like to revisit it.  Like all data sets, there is usually something else interesting nested in there somewhere ... you just need to find a way to visualize it correctly :D.</p>
+
+<h3>Barking Owl</h3>
+
+<p>I also talked about a current Hacks and Hackers Rochester project called 'Barking Owl'.  The source code can be found [here](<a href="https://github.com/thequbit/barkingowl">https://github.com/thequbit/barkingowl</a> \"here\").  BarkingOwl is a project that will scrape any website that is passed in by the user and pull out all of the PDF files for that URL.  It will then search those PDF's for keywords and/or phrases.  Think: "Tell me when the town of Dansville, NY is talking about 'fracking'".\n\nThe project is largely based off of work I did on <a href="http://monroeminutes.org" title="Monroe Minutes">Monroe Minutes</a> (<a href="https://github.com/thequbit/monroeminutes" title="source">source</a>).  From that project, a small tool called PDFImp (<a href="https://github.com/thequbit/pdfimp" title="PDFImp">source</a>) was born.  PDFImp will pull from any URL any link that leads to a PDF (note that this could result in a redirect and it will still return the link), as well as the text of that a tag.  Here is an example usage of PDFImp:</p>
+
+<pre><code>&gt;&gt;&gt; from pdfimp import pdfimp
+&gt;&gt;&gt;
+&gt;&gt;&gt; imp = pdfimp()
+&gt;&gt;&gt; siteurl = "http://www.example.com/"
+&gt;&gt;&gt; links = imp.getpdfs(maxlevel=2,siteurl=url,links=[url])
+&gt;&gt;&gt; print links
+</code></pre>
+
+<p>This would produce a list of tuples: (pdfurl,linktext), where pdfurl is the url of the PDF, and linktext is the text found in the a tag that lead to the PDF.\n\nAt the time of this blog post, BarkingOwl uses a database access layer produced by the sql2api (<a href="https://github.com/thequbit/sql2api" title="source">source</a>) tool.  I would like to do two things in the near future:</p>
+
+<ul>
+<li><p>Convert BarkingOwl scraper over to use <a href="http://www.sqlalchemy.org/" title="SQLAlchemy">SQLAlchemy</a></p></li>
+<li><p>Create a Pyramid based web front-end for users to enter new URLs and phrases into the database.</p></li>
+</ul>
+
+<p>The first item will bring BarkingOwl into the realm of an 'industry standard' method of DB access (although I still prefer my sql2api method ...).</p>
+
+<p>The second item will allow someone other than me with terminal access to actually use the tool ... ha.</p>
+
+<p>For those interested, here is the link to the presentation that I gave at the HHSyracuse meetup:</p>
+
+<p><a href="http://bit.ly/18E8rSO" title="Syracuse.com/hh Syracuse meetup">Syracuse.com/hh Syracuse meetup</a></p>
+
+<p>-TD</p>
+
+						</div>
+					</div>
+				</div>
+				<div class="footer">
+					Timothy Duffy | timduffy.me | 2013 | <a href="https://github.com/thequbit/timduffy.me">Source Code</a>
+				</div>
+			</div>
+			
+			<div class="sidebar" id="sidebar">
+				<div class="widget" id="twitterwidget">
+					<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+					<script>
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+
+</body>
+</html>

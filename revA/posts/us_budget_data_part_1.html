@@ -1,0 +1,235 @@
+<html>
+<head>
+
+	<title>TimDuffy.Me</title>
+
+	<link href="../css/main.css" rel="stylesheet" type="text/css">
+
+	<link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
+
+	<link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+	<div id="header">
+		<div class="insideheader">
+			<div class="sitetitle">
+				<a href="index.html">TimDuffy.Me</a>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="index.html">Home</a>
+					</li>
+					<li>
+						<a href="blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="http://mycodespace.net/">Projects</a>
+					</li>
+					<li>
+						<a href="about.html">About</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div class="main" id="main">
+		<div class="innermain" id="innermain">
+			<div class="section">
+				<div class="content" id="content">
+					<div class="post">
+						<div class="posttitle">Working with US 2014 Budget Data - Part I</div>
+						<div class="postdatetime">October 31st, 2013</div>
+						<div class="keywords">Keywords: budget, usa, 2014, python, civic, opensource, opendata</div>
+						<div class="postcontent">
+
+<br>
+<h3>The Story</h3>
+
+<p>I was having a conversation with a friend of mine about some of the various topics within the political atmosphere these days, one of which was welfare.  Specifically we were discussing the cost on tax payers and how much it is abused by those who are currently receiving that money.</p>
+
+<p>After much back and forth and a rather unfortunate derailment, I did start thinking about how difficult it is for people to wrap their minds around such 1. massive amounts of money, and 2. the complexity of such a system as the US governments budget.</p>
+
+<p><em>So I got to hacking.</em></p>
+
+<p>I started digging for the 2014 budget data, and I was pleasantly surprised that it was pretty simple to find:</p>
+
+<p><a href="http://www.gpo.gov/fdsys/browse/collection.action?collectionCode=BUDGET&amp;browsePath=Fiscal+Year+2014&amp;searchPath=Fiscal+Year+2014&amp;leafLevelBrowse=false&amp;isCollapsed=false&amp;isOpen=true&amp;packageid=BUDGET-2014-DB&amp;ycord=1400">United States of America Budget Data</a></p>
+
+<p>You can at the above link that (at least at the time of this blog post) there is data back to 1996!  In this case, however, I just wanted the data for the 2014 budget (later we will see I got a lot more than I was thinking I was going to get).  The four files I pulled down were the 'Budget Authority','Outlays','Receipts', and 'User's Guide'.  The first three I pulled down as CSV's and the last as a PDF.</p>
+
+<p>I would like to take a moment to thank the folks over at the Budget Analysis Branch Office of Management and Budget for putting this data together in such a nice way.  Not only is the data in a easily machine readable format, but there is a <a href="http://www.gpo.gov/fdsys/pkg/BUDGET-2014-DB/pdf/BUDGET-2014-DB-4.pdf">Users Guide</a>!  A User's Guide to budget data!? <em>Ridiculously awesome</em>.</p>
+
+<p>I decided to make this a Hacks/Hackers Rochester based project (since I felt like a lot of my projects for HHRoc have been a bit to abstract and/or too big to really have anyone appreciate (yet).  The code and data live here: <a href="https://github.com/hhroc/usbudgetdata">https://github.com/hhroc/usbudgetdata</a></p>
+
+<h3>The Data</h3>
+
+<p>So the file I decided to focus on first was the <a href="https://raw.github.com/hhroc/usbudgetdata/master/data/BUDGET-2014-DB-1.csv">Budget Authority</a> CSV.  It has a great deal of data in it (it's almost 2MB of text).  It is, however, formatted very nicely and is ready to be parsed.  First, let's look at what data is actually in the file.  Here are the columns with what I have deciphered as their descriptions:</p>
+
+<ul>
+<li><p><strong>Agency Code</strong> - This is a three digit numerical value for the Agency.</p></li>
+<li><p><strong>Agency Name</strong> - The name of the Agency.</p></li>
+<li><p><strong>Bureau Code</strong> - This is a two digit numerical value for the Bureau within the Agency </p></li>
+<li><p><strong>Bureau Name</strong> - The name of the Bureau.</p></li>
+<li><p><strong>Account Code</strong> - This is a variable length numerical value for the Account within the Bureau.  Note: if there is no account code it
+is blank.</p></li>
+<li><p><strong>Account Name</strong> - The name of the Account.</p></li>
+<li><p><strong>Treasury Agency Code</strong> - This is a variable length numerical value, I assume, used by the Treasury to reference the Account. 
+Note: if there is no account code is is blank.</p></li>
+<li><p><strong>Subfunction Code</strong> - This is a three digit numerical value for the Sub Function of the Bureau.</p></li>
+<li><p><strong>Subfunction Title</strong> - The name of the Sub Function.</p></li>
+<li><p><strong>BEA Category</strong> - I believe this to be the type of the account.  Some examples include 'Discretionary', 'Mandatory', 'Net interest'.</p></li>
+<li><p><strong>On- or Off- Budget</strong> - This can be one of two values: 'On-budget' or 'Off-budget'</p></li>
+</ul>
+
+<p>There are then 44 additional columns that have the budget for each item from 1976 out to (projected) 2018.  Each column as a positive, negative, or zero integer in it.</p>
+
+<p>Note: these values are in thousands
+Note: The numbers have commas in them so if they are 4 or more digits they are wrapped in quotation marks (way lame, but we can work with it).</p>
+
+<h3>The Conversion</h3>
+
+<p>So now that we have the data, and we know what it is, let's see if we can get it into a format we can actually do something with.  For the 'quick and dirty' version here, I am going to use a sqlite3 database.  This allows me to save the data pretty simply, while still allowing for a pretty powerful interface for querying for information.</p>
+
+<p>We have all of the headers for each column, so we know what each column in our database table will be called.  There are, however, rules to naming your columns (most notably you may not have spaces in them), so we need to do a bit of sanitizing (note: this is going to be the theme for the first part of this exercise and really an important part of any data mining/formatting process).</p>
+
+<p>First, let's read in out file:</p>
+
+<pre><code>import csv
+
+def readfile(infilename):
+    data = []
+    i = 0
+    with open(infilename,'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            r = []
+            for col in row:
+                r.append(col)
+            data.append(r)
+        i += 1
+    return data
+
+def readcolumns(data):
+    columns = []
+    for i in range(0,len(data[0])):
+        name = data[0][i]
+        value = data[1][i].replace('-','').replace(',','')
+        if value.isdigit():
+            isnum = True
+        else:
+            isnum = False
+        columns.append((name,isnum))
+    return columns
+</code></pre>
+
+<p>The readfile function allows us to open the CSV file, read in each row, and then break each item in the row (each column value) and then create an array of arrays.  This will allow us to index to any element anywhere in the CSV.  The readcolumns function takes in that data that we read and then pulls the columns names out of it (this is needed to name our table columns within the database).</p>
+
+<p>Awesome, now we have the full data set as a list of lists, as well as a list of all of the column headers.  Note that the column headers are not yet sanitized (they have spaces and dashes and other not-permitted characters within them).</p>
+
+<h3>The Database</h3>
+
+<p>Now it's time to write the code to take our list of lists and push it down into an sqlite database.  There are a few reasons why we want to put it into a database file rather than keep it in the CSV file that it came in.</p>
+
+<ul>
+<li>It allows us to execute complicated search queries on the data</li>
+<li>SQLite3 is a standardized file format that can be read by a number of opensource tools</li>
+<li>The data can now very quickly be dumped into another database, or another file format using standardized tools</li>
+</ul>
+
+<p>We need to do two things when we are writing out our database data.  1. We need to create the table with the correct header names, and 2. we need to load the data from our list of lists into the created table.</p>
+
+<pre><code>def writedb(columns,data,outputfile):
+    con = sqlite3.connect(outputfile)
+    with con:
+        cur = con.cursor()
+
+        # create the table
+        query = "CREATE TABLE data(" #id INTEGER PRIMARY KEY AUTOINCREMENT,\n"
+        for column in columns:
+            name,isnum = column
+            name = name.replace(' ','_').replace('-','')
+            if name.isdigit():
+                name = "Year_{0}".format(name)
+            t = "TEXT"
+            if isnum:
+                t = "INT"
+            query += "{0} {1},\n".format(name,t)
+        query = query[:-2]
+        query += ")"
+        cur.execute(query)
+
+        # load the data
+        i = 0
+        for row in data:
+            query = "INSERT INTO data VALUES("
+            if not i == 0:
+                for col in row:
+                    if not col.isdigit():
+                        col = col.replace("'","''")
+                        col = "'{0}'".format(col)
+                    query += "{0},".format(col)
+                query = query[:-1] # last coma
+                query += ")"
+                print query
+                cur.execute(query)
+            i += 1
+
+        cur.close()
+    con.close()
+</code></pre>
+
+<p>The first part of this function creates the table by iterating through the list of column headers.  Notice that it sanitizes them by removing dashes and replacing spaces with underscores.</p>
+
+<p>The second part then inserts the data from each row in the CSV into the table we created.  Notice that we check to see if we need to put single quotes around non-numeric values, as well as escape single quotes.</p>
+
+<h3>Putting it all together</h3>
+
+<p>Now that we can 1. read in the data, 2. create a sqlite3 database with a table with the correct column names, and 3. load all of the data into the database we can put it all together into a single main function.</p>
+
+<pre><code>def main():
+    infilename = "../data/BUDGET-2014-DB-1.csv"
+    outfilename = "../data/BUDGET-2014-DB-1.sqlite"
+
+    print "Reading data ..."
+    data = readfile(infilename)
+
+    print "Processing data ..."
+    columns = readcolumns(data)
+
+    print "Writing out data ..."
+    writedb(columns,data,outfilename)
+</code></pre>
+
+<p>Now we have a way to pull int the CSV file (of actually any year) of the US budget, and convert it into a useful file type!  Stay tuned for part two of this micro series where we will actually do something with the data :D.</p>
+
+<p>Wanna keep the converstation going?  Feel free to do so on <a href="https://twitter.com/arbiterofbits">twitter</a> or <a href="mailto:tim@timduffy.me">email me!</a></p>
+
+						</div>
+					</div>
+				</div>
+				<div class="footer">
+					Timothy Duffy | timduffy.me | 2013 | <a href="https://github.com/thequbit/timduffy.me">Source Code</a>
+				</div>
+			</div>
+			
+			<div class="sidebar" id="sidebar">
+				<div class="widget" id="twitterwidget">
+					<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+					<script>
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+
+</body>
+</html>

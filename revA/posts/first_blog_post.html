@@ -1,0 +1,94 @@
+<html>
+<head>
+
+	<title>TimDuffy.Me</title>
+
+	<link href="../css/main.css" rel="stylesheet" type="text/css">
+
+	<link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
+
+	<link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+	<div id="header">
+		<div class="insideheader">
+			<div class="sitetitle">
+				<a href="index.html">TimDuffy.Me</a>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="index.html">Home</a>
+					</li>
+					<li>
+						<a href="blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="http://mycodespace.net/">Projects</a>
+					</li>
+					<li>
+						<a href="about.html">About</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div class="main" id="main">
+		<div class="innermain" id="innermain">
+			<div class="section">
+				<div class="content" id="content">
+					<div class="post">
+						<div class="posttitle">First Blog Post</div>
+						<div class="postdatetime">September 1st, 2013</div>
+						<div class="keywords">Keywords: budget, usa, 2014, python, civic, opensource, opendata</div>
+						<div class="postcontent">
+
+<p>Well this is my first blog post on the new website.</p>
+
+<p>I suppose I should take a moment to tell the story of how the site came to be.  I have a number of domains registered with <a href="http://namecheap.com" title="Name Cheap">Name Cheap</a> so I find myself going to their website often.  Side note: I would highly recommend them as a registrar, they have been fantastic to me.  So a few weeks ago I went to their website and saw they had *.me domains for $0.99 for the first year, and you get an email address!  I figured, how could I not ...</p>
+
+<p>After registering timduffy.me, I put up a static html page that was simply:</p>
+
+<pre><code>&lt;html&gt;
+&lt;body&gt;
+    &lt;center&gt;&lt;h1&gt;TimDuffy.Me&lt;/h1&gt;&lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>I know someone reading this just twitched when they read that center tag, :D.  I figured it was good enough since what I really wanted was the email address.</p>
+
+<p>After a few days (read: weeks) I figured I should probably get around to putting something more meaningful up on the site since I was giving my new email address out to people, I didn't want them to be disappointed when they went to the domain :p.</p>
+
+<p>I started down the path of trying to write a very simple CMS/Blog website using pyramid (a python web framework) that would be based around the blog being written in Markdown, and then rendered.  I needed to, however, come up to speed on a number of technologies before I could do this:  pyramid (and it's rendering engine), SQLAlchemy, and Markdown.  I dove in.  I got lost.  I gave up.</p>
+
+<p>So what you are looking at here is flat html based website with some JQuery JavaScript that pulls blog posts from a json file that sits on the server (Apache2) - nothing fancy.  Feel free to take a look at the code here: <a href="https://github.com/thequbit/timduffy.me" title="TimDuffy.me">timduffy.me</a>.</p>
+
+						</div>
+					</div>
+				</div>
+				<div class="footer">
+					Timothy Duffy | timduffy.me | 2013 | <a href="https://github.com/thequbit/timduffy.me">Source Code</a>
+				</div>
+			</div>
+			
+			<div class="sidebar" id="sidebar">
+				<div class="widget" id="twitterwidget">
+					<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+					<script>
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+
+</body>
+</html>

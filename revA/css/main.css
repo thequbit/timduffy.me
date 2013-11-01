@@ -19,6 +19,10 @@ div {
 }
 
 pre {
+	margin-left: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding-left: 5px;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	font-size: 14px;
@@ -108,8 +112,6 @@ div.innermain {
 div.section {
 	float: left;
 	width: 760px;
-	border: solid 1px #E0E0E0;
-	background: #FFFFFF;
 	overflow: hidden;
 }
 
@@ -123,6 +125,8 @@ div.contentheader {
 
 div.content {
 	padding: 15px 15px 15px 15px;
+	border: solid 1px #E0E0E0;
+	background: #FFFFFF;
 }
 
 div.link {
@@ -202,13 +206,22 @@ div.calendareventtitle {
 
 /* -- Blog -- */
 
+div.bloglist {
+	margin-left: 25px;
+}
+
 div.post {
     padding-left: 5px;
 	padding-right: 5px;
 	padding-top: 2px;
 	padding-bottom: 20px;
 	border: 1px solid #F8F8F8;
-	margin-bottom: 10px;
+	margin-bottom: 5px;
+}
+
+div.keywords {
+	padding-left: 25px;
+	font-size:14px;
 }
 
 div.posttitle {
@@ -224,6 +237,7 @@ div.postdt {
 div.postcontent {
 	padding-top: 8px;
 	padding-bottom: 8px;
+	margin-bottom: 20px;
 }
 
 div.postcontent li {
@@ -279,4 +293,12 @@ div.postcontent li {
 	width: 100%;
 	background-color: LightGray;
 	border: 1px solid DarkGray;
+}
+
+/* footer */
+
+.footer
+{
+	margin-top: 5px;
+	text-align: center;
 }
