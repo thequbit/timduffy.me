@@ -96,46 +96,6 @@
 	</footer>
 
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-	<script src="Markdown.Converter.js"></script>
-
-	<script>
-	
-		function loadcalendar()
-		{
-			$.getJSON('events.json', function(data) {
-                /*
-				 * data.error  [int]
-				 * data.events [array]
-				 * 
-				 *    event.date    [string]
-				 *    event.title   [string]
-				 *
-				 */
-				 
-				 if( data.error == 0 )
-				 {
-					for (var i = 0; i < data.events.length; i++) {
-						var eventhtml = "";
-						
-						eventhtml += '<div class="calendarevent">';
-						eventhtml += '<div class="calendardate">' + data.events[i].date + '</div>';
-						eventhtml += '<div class="calendareventtitle"><a href="' + data.events[i].url +'">' + data.events[i].title + '</a></div>';
-						eventhtml += '</div>';
-						
-						$("#calendarwidget").append(eventhtml);
-					}
-				 }
-            });
-		}
-		
-		function loadpage()
-		{
-			loadcalendar();
-		}
-	
-		loadpage();
-	
-	</script>
 
 </body>
 </html>
