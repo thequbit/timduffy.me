@@ -1,0 +1,132 @@
+<html>
+<head>
+
+	<title>TimDuffy.Me - Blog - Election Data Polling</title>
+
+	<meta name="keywords" content="election, election2013, usa, 2013, python, civic, opensource, opendata">
+
+	<link href="../css/main.css" rel="stylesheet" type="text/css">
+
+	<link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
+
+	<link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+	<div id="header">
+		<div class="insideheader">
+			<div class="sitetitle">
+				<a href="/index.html">TimDuffy.Me</a>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="/index.html">Home</a>
+					</li>
+					<li>
+						<a href="/blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="http://mycodespace.net/">Projects</a>
+					</li>
+					<li>
+						<a href="/about.html">About</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div class="main" id="main">
+		<div class="innermain" id="innermain">
+			<div class="section">
+				<div class="content" id="content">
+					<div class="post">
+						<div class="posttitle">Election Data Polling</div>
+						<div class="postdatetime">November 5th, 2013</div>
+						<div class="keywords">election, election2013, usa, 2013, python, civic, opensource, opendata</div>
+						<div class="postcontent">
+
+<p>I decided that I wanted to take a stab at pulling some data for the election night hackathon.  I found this slick table on a NYS website.  Funny thing though, it has some kind of DNS cache poison/sickness.</p>
+
+<ul>
+<li>URL: <a href="http://nyenr.elections.state.ny.us/UnofficialElectionResultsCounty.aspx">http://nyenr.elections.state.ny.us/UnofficialElectionResultsCounty.aspx</a></li>
+<li>IP: 72.43.86.20</li>
+</ul>
+
+<p>"Why don't you just go to the IP address, Tim?".  That's a great question!  They were using layer 7 balancing and/or host-based routing. Soooo, I went a head and added the IP to my /etc/hosts file (on Ubuntu 12.04 LTS).  Once I did that, we were good to go.</p>
+
+<p>So, on that page there is a table-o-results for the number of YES and NO votes for each proposition.  The table is a, awesomely, well formed HTML table with id's all over the place!  I used BeautifulSoup to read in the html and parse it.</p>
+
+<pre><code>import urllib2
+from bs4 import BeautifulSoup
+
+html = urllib2.urlopen(url)
+soup = BeautifulSoup(html)
+table = soup.find_all('table', id='ctl00_CountySummary_tblCountySummary')[0]
+trs = table.find_all('tr')
+</code></pre>
+
+<p>trs now holds all of the rows within the table.  The table, however, has some information I am not interested in, specifically the top headers.  The table's first three rows are 1) column labels, 2) Yes/No labels, and 3) totals.</p>
+
+<p>Now, within the first row there are embedded as a property of the HTML tags the title of the proposition.  I want to pull out of the column names their title property as they are the name of the propositions.  Then I save the yes/no row, and then all remaining rows as data:</p>
+
+<pre><code>import csv
+props = []
+data = []
+yesno = []
+for i in range(0,len(trs)):
+    tds = trs[i].find_all('td')
+    if i == 0:
+        for i in range(0,len(tds)):
+            if not i == 0:
+                props.append(tds[i]['title'])
+                props.append('')
+    elif i == 1:
+        for i in range(0,len(tds)):
+            yesno.append(tds[i].find(text=True))
+    else:
+        row = []
+        for i in range(0,len(tds)):
+            row.append(tds[i].find(text=True))
+        data.append(row)
+</code></pre>
+
+<p>Awesome, I've got my columns, my yes/no values, and my data.  We can no bring it all together into a nice little CSV file!</p>
+
+<pre><code>def writedata(props,yesno,data,outfile):
+    c = csv.writer(open(outfile, "wb"))
+    c.writerow(props)
+    c.writerow(yesno)
+    for row in data:
+        c.writerow(row)
+</code></pre>
+
+<p>Feel free to take a look at the code <a href="https://github.com/hhroc/nyselecprops">here</a>.  The code is licensed under GPLv3.</p>
+
+						</div>
+					</div>
+				</div>
+				<div class="footer">
+					Timothy Duffy | timduffy.me | 2013 | <a href="https://github.com/thequbit/timduffy.me">Source Code</a>
+				</div>
+			</div>
+			
+			<div class="sidebar" id="sidebar">
+				<div class="widget" id="twitterwidget">
+					<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+					<script>
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+
+</body>
+</html>

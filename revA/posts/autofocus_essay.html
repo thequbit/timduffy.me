@@ -1,0 +1,158 @@
+<html>
+<head>
+
+	<title>TimDuffy.Me - Blog - Auto Focus Essay</title>
+
+	<meta name="keywords" content="budget, usa, 2014, python, civic, opensource, opendata">
+
+	<link href="../css/main.css" rel="stylesheet" type="text/css">
+
+	<link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
+
+	<link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+	<div id="header">
+		<div class="insideheader">
+			<div class="sitetitle">
+				<a href="/index.html">TimDuffy.Me</a>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="/index.html">Home</a>
+					</li>
+					<li>
+						<a href="/blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="http://mycodespace.net/">Projects</a>
+					</li>
+					<li>
+						<a href="/about.html">About</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div class="main" id="main">
+		<div class="innermain" id="innermain">
+			<div class="section">
+				<div class="content" id="content">
+					<div class="post">
+						<div class="posttitle">Title Goes Here</div>
+						<div class="postdatetime">Date Goes Here</div>
+						<div class="keywords">budget, usa, 2014, python, civic, opensource, opendata</div>
+						<div class="postcontent">
+<h2>Background</h2>
+
+<p>Back in mid 2007 to late 2008 I had the amazing opportunity to work on a project with a local company that assisted people with a degenerative condition called <a href="http://en.wikipedia.org/wiki/Macular_degeneration">Macular Degeneration</a>.  The project called for a device that would be worn by a user and allow them to better use the remaining good part of their eye(s).</p>
+
+<p>The device was, from the hardware side of things, based off of an existing platform the company had already produced for another product.  The eye glasses-like device had two small LCD screens, a camera, some smarts inside the head-piece and a 'control box' on the end of a tether.  It wasn't the sexiest device in the work, but by the time I left it did just about everything management wanted it to do (even though that appeared to change rather often).</p>
+
+<p>The objective of the device was to try and capture a market that wasn't being serviced very well at the time.  They also wanted to make the product for as cheap as possible to help as many people as possible.  This requirement for low cost hardware caused a lot of headaches down the line with respect to software and firmware within the device.</p>
+
+<h2>Features</h2>
+
+<p>The device had a number of pretty slick algorithms that I got to implement within a Xilinx Spartan 3e Field Programmable Gate Array (FPGA).</p>
+
+<ul>
+<li><p><strong>Auto Focus</strong> </p>
+
+<ul><li>This allowed the user to press a button which made the device move it's lens system to the optimal focus point.  This was particularly useful for those who had very poor eyesight as it was very difficult for them to tell of the unit was at the best focal point.  Optimal focus allowed the other algorithms to produce the best possible image for the user</li></ul></li>
+<li><p><strong>Digital Zoom</strong></p>
+
+<ul><li>The device had a certain amount of optical zoom, however it was determined that digital zoom might also be useful for certain users.</li></ul></li>
+<li><p><strong>Image stabilization</strong></p>
+
+<ul><li>This was a particularly important feature when high zoom levels were being used as small head movements were amplified significantly.  The maximum zoom level was almost unusable by a person with no health issues, and completely unusable for someone who had <a href="http://www.ninds.nih.gov/disorders/tremor/detail_tremor.htm">uncontrollable head movement</a>. </li></ul></li>
+<li><p><strong>Contrast Enhancement</strong></p>
+
+<ul><li>This allowed the user to modify the image they were looking at by enhancing the contrast between contrast levels within the image.  This would allow a user to observe a watch face that was multiple colors and gradients, but only see a white background with black text for the numbers.</li></ul></li>
+<li><p><strong>Color Blindness Compensation</strong></p>
+
+<ul><li>This was a really fascinating manipulation of the YCbCr color space which allowed remapping of colors within the color space to effectively allow those suffering from color blindness to see more colors.  We had absolutely amazing results with this.</li></ul></li>
+<li><p><strong>External Video Input</strong></p>
+
+<ul><li>Not really an algorithm but the device allowed for an external video source to be attached to it, and then viewed in its viewer.  This allowed for all of the above algorithms (other than auto focus and image stabilization), to be allowed to video feeds from all kinds of devices including existing low-vision assistive devices and cameras with high resolutions and level of zoom.</li></ul></li>
+</ul>
+
+<p>I worked on the product through a few different hardware platform revisions, and numerous requirement changes.  The two algorithms that I had the most fun implementing, however, were auto focus and image stabilization.  Both required me to pull from numerous publications from organizations such as the IEEE, as well as absorbing the knowledge from colleagues and professors.  I was still taking classes at <a href="http://www.rit.edu/">Rochester Institute of Technology</a> while working full time.  I do not recommend doing that to anyone - I learned a lot while in industry and in the classroom, but the time requirement was tough to meet.</p>
+
+<h2>Creating Data Sets</h2>
+
+<p>There are a great deal of industry standard and accepted data sets used for image processing algorithm development and testing.  My particular set of requirements, and specifically the significantly limited lens system, drove me to create my own data set.  The original set of images that were captured were from the device itself, a webcam, and a DSLR.  This range of capture devices allowed for a diverse pool of images to pull from when testing the algorithms I needed to implement.</p>
+
+<p>The data set that all algorithms were based off of ended up being the clean DSLR images with noise artificially added to mimic the images seen on the device I was developing.  This method of using the higher quality images removed a great deal of factors from the equations, especially since the hardware we were developing was under seemingly constant revision.</p>
+
+<p>Five sets of 32 images going from one focal extreme to the other were captured.</p>
+
+<ul>
+<li><p>A book</p></li>
+<li><p>A remote</p></li>
+<li><p>A playing card</p></li>
+<li><p>Three data sets of myself in a door way</p></li>
+</ul>
+
+<p>The goal was to be able to get the device to quickly, and accurately find the most focused image after the user moves from looking at an object right in front of them, to moving to look at an object, such as a person in a doorway, much farther away.  I was happy with the image sets that we captured.  They can be found <a href="https://github.com/thequbit/af_essay">here</a>.  All of the images are licensed under a <a href="http://creativecommons.org/licenses/by-sa/3.0/legalcode">CC BY-SA 3.0 license</a>.</p>
+
+<h2>The Auto-Focus Algorithm</h2>
+
+<p>The first requirement that came to me was the ability for the user to hit a button and have the device find the 'most focused image'.  This immediately started the conversation of what 'the most focused image' actually meant to us, the design team, and our users, the visually impaired.</p>
+
+<p>What we found was the mathematical definition of the most focused image, that is the image with the highest frequency content (energy), was not necessarily the best image for the user.  This rather odd finding was due to how the eye is laid out, and specificly the dencity of the <a href="http://en.wikipedia.org/wiki/Photoreceptor_cell">Photoreceptor cells</a> outside of the center of the eye.  We found that a small amount of blurring allowed more Photoreceptor cells to be excited, while still maintaining enough contrast for the mind to pull out what the user was looking at.</p>
+
+<p>What was decided on was a system that allowed for the image with the highest energy to be found automatically, with a programmable offset to be added to the device that would offset the position of the lens system post-auto focus.  This allowed the device to be used to find perfect focus, or add blur to a perfectly focused image if the the user desired it.</p>
+
+<h3>Research</h3>
+
+<p>There was a bit of research that needed to happen to come up to speed on what the current state of the art was for algorithms that found the most focused image within a image set.  This involved a lot of Google searches as well as a great deal of white board diagrams.</p>
+
+<p>I was a bit restricted by the hardware platform as it was already built by the time I was brought onto the team.  Since the system had no radar, sonar, IR sensors, and a single camera, I knew I was going to need to determine the level of focus from the image stream itself rather than an external sensor.  Also I couldn't take advantage of multi-camera approaches.</p>
+
+<p>I came to settle on three different approaches, two using the spacial domain and two using the frequency domain</p>
+
+<ul>
+<li><p>1 dimensional difference formula</p>
+
+<ul><li>This approach takes the difference between two adjacent pixels and sums the result across the image.  The resulting value is taken as the focus index.</li></ul></li>
+<li><p>2 dimensional difference formula</p>
+
+<ul><li>This approach is very similar to the first method, except the difference of pixels next to each in both the vertical and horizontal is calculated.  Then the sum across the image of the square root of the vertical and horizontal difference is found.  The resulting value is taken as the focus index.</li></ul></li>
+<li><p>Discrete Cosine Transform</p>
+
+<ul><li>This algorithm finds its way into several different image processing algorithms, most notably the <a href="http://en.wikipedia.org/wiki/JPEG">JPEG</a> compression algorithm.  This method would provide the real portion of the frequency content of the image.  The summation of the resulting frequencies is taken as the focus index.</li></ul></li>
+<li><p>Discrete Fourier Transform</p>
+
+<ul><li><a href="http://en.wikipedia.org/wiki/Joseph_Fourier">Fourier</a> did some very awesome work research back in the 1800's which resulted in a set of equations and rules that allowed for the conversion between the spacial domain and the frequency domain.  <a href="http://en.wikipedia.org/wiki/Discrete_Fourier_transform">The Discrete Fourier Transform</a> would allow for both the real and imaginary portions of the frequencies within the image.  The summation of the magnitude of the resulting frequencies is taken as the focus index.</li></ul></li>
+</ul>
+
+<p>After identifying the four methods I determined would be a good fit for the application, I needed to start analyzing each to better understand the cost, in resources and time, as well as complexity of implementation.</p>
+						</div>
+					</div>
+				</div>
+				<div class="footer">
+					Timothy Duffy | timduffy.me | 2013 | <a href="https://github.com/thequbit/timduffy.me">Source Code</a>
+				</div>
+			</div>
+			
+			<div class="sidebar" id="sidebar">
+				<div class="widget" id="twitterwidget">
+					<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+					<script>
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+
+</body>
+</html>
