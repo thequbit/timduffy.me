@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+  <title>TimDuffy.Me Blog</title>
+  <description>A Collection of My Thoughts</description>
+  <link>http://timduffy.me/blog.html</link>
+  <lastBuildDate>Fri, 15 Nov 2013 11:15:00 -0500</lastBuildDate>
+  <ttl>3600</ttl>
+  
+  <item>
+    <title>BarkingOwl Scraper Design</title>
+    <description>Part II of the BarkingOwl Design Series</description>
+	<link>>http://timduffy.me/posts/barkingowl_scraper_design.html</link>
+	<guid>6</guid>
+	<pubDate>2013-11-14</pubDate>
+  </item>
+  
+  <item>
+    <title>BarkingOwl Architecture Design</title>
+    <description>Part I of the BarkingOwl Design Series</description>
+	<link>>http://timduffy.me/posts/barkingowl_architecture_design.html</link>
+	<guid>5</guid>
+	<pubDate>2013-11-13</pubDate>
+  </item>
+  
+  <item>
+    <title>Election Data Polling</title>
+    <description>Polling NYS Proposals on Election Night</description>
+	<link>>http://timduffy.me/posts/election_data_polling.html</link>
+	<guid>4</guid>
+	<pubDate>2013-11-05</pubDate>
+  </item>
+  
+  <item>
+    <title>Election Night Hackathon</title>
+    <description>Election Night Hackathon Overview and Ballot Breakdown</description>
+	<link>>http://timduffy.me/posts/election_night_hackathon.html</link>
+	<guid>3</guid>
+	<pubDate>2013-11-05</pubDate>
+  </item>
+  
+  <item>
+    <title>US Budget Data Part 1</title>
+    <description>Working with US 2014 Budget Data - Part 1</description>
+	<link>>http://timduffy.me/posts/us_budget_data_part_1.html</link>
+	<guid>2</guid>
+	<pubDate>2013-10-31</pubDate>
+  </item>
+  
+  <item>
+    <title>September 2013 Syracuse Hacks and Hackers Meetup</title>
+    <description>Breif Summary of my time at the September 2013 HHCuse meetup</description>
+	<link>>http://timduffy.me/posts/syracuse_hacks_and_hackers_meetup.html</link>
+	<guid>1</guid>
+	<pubDate>2013-09-05</pubDate>
+  </item>
+  
+  <item>
+    <title>First Blog Post</title>
+    <description>FIRST!!!!1!!</description>
+	<link>>http://timduffy.me/posts/first_blog_post.html</link>
+	<guid>0</guid>
+	<pubDate>2013-09-01</pubDate>
+  </item>
+  
+</channel>
+</rss>
