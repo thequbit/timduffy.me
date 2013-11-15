@@ -206,6 +206,16 @@ div.calendareventtitle {
 
 /* -- Blog -- */
 
+blockquote {
+    padding-left: 40px;
+	padding-right: 40px;
+	font-size: 20px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	font-weight: bold;
+	color: maroon;
+}
+
 div.bloglist {
 	margin-left: 25px;
 }
@@ -219,9 +229,27 @@ div.post {
 	margin-bottom: 5px;
 }
 
+p img {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+div.post h1 {
+	padding-top: 12px;
+}
+
+div.post h2 {
+	padding-top: 12px;
+}
+
+div.post h3 {
+	padding-top: 12px;
+}
+
 div.keywords {
 	padding-left: 25px;
-	font-size:14px;
+	font-size:13px;
+	font-weight: bold;
 }
 
 div.posttitle {
@@ -264,7 +292,7 @@ div.postcontent li {
 }
 
 .wmd-button > span {
-	background-image: url(wmd-buttons.png);
+	background-image: url(../media/wmd-buttons.png);
 	background-repeat: no-repeat;
 	background-position: 0px 0px;
 	width: 20px;
