@@ -1,0 +1,148 @@
+<html>
+<head>
+
+	<title>TimDuffy.Me - Blog - Hacks and Hackers Rochester Meetup - Neighborhood Data Map</title>
+
+	<link href="../css/main.css" rel="stylesheet" type="text/css">
+
+	<link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
+
+	<link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+	<div id="header">
+		<div class="insideheader">
+			<div class="sitetitle">
+				<a href="/index.html">TimDuffy.Me</a>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="/index.html">Home</a>
+					</li>
+					<li>
+						<a href="/blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="/projects.html">Projects</a>
+					</li>
+					<li>
+						<a href="/about.html">About</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div class="main" id="main">
+		<div class="innermain" id="innermain">
+			<div class="section">
+				<div class="content" id="content">
+					<div class="post">
+						<div class="posttitle">Hacks and Hackers Rochester Meetup - Neighborhood Data Map</div>
+						<div class="postdatetime">Novermber 11th, 2013</div>
+						<div class="keywords">Keywords: hhroc, hacks/hackers, rochester, neighborhood data map, meetup</div>
+						<div class="postcontent">
+<h3>Hacks and Hackers Rochester Meetup - Neighborhood Data Map</h3>
+
+<p>Hacks and Hackers Rochester had a absolutely fantastic <a href="http://www.meetup.com/HackshackersROC/events/147880132/">meetup</a> this past Thursday, November 7th, 2013.  We were lucky enough to have Pam Delaney and Harry Fits from the Rochester Department of <a href="http://www.cityofrochester.gov/nbd/">Neighborhood &amp; Business Development</a> come in and talk to us about their <a href="http://www.cityofrochester.gov/neighborhooddatamap/">Neighborhood Data Map</a> tool!</p>
+
+<p>We started the meetup off with introductions from those attending and I spoke briefly of what HHRoc is, and some of the projects we currently have going on.  The goal of the meeting was to provide a platform for Pam and Harry to present the Data Map.</p>
+
+<p>Below are the notes that Remy Decausemaker took during the meeting.  I cleaned them up just slightly.</p>
+
+<p><strong>Back Story</strong></p>
+
+<p>About 1.5 years ago, Pam got a request from Beechwood community.  They wanted to do some
+"down zoning" properties from multi to single family households. No one was
+keeping track of this, so Pam offered to provide a picture of the neighborhood. Pam decided to brake the neighborhood down into 7 areas, with 10 variables for each area.
+Went to a public meeting, divided into 7 tables based on natural boundaries,
+and then looked at maps, and came up with action items based on the data they
+saw.</p>
+
+<p>It was a revelation of "wow, people want data".  The people within the neighborhood were lower-middle income level, and they were working to come up with strategies to 'fix' their neighborhood. They weren't going to city hall, hocking for grants, but actually doing things to work toward making a difference.</p>
+
+<p>After this realization that people from within the city would want this data, and would actually use it to work to make their particular slice of the world better, Pam brought it to her Administration.  Carlos Carballada, told us to do this for each "quad".  They told us to pick 3 other neighborhoods to do exactly what was done with the Beechwood inhabitants.</p>
+
+<p>Pam said she had seen other cities that had done "quality of life" studies, but her and Harry thought "why not the whole city?".  Lets get data out to the whole city. At first Pam and Harry though it would be a paper doc, but small groups with city departments.  The document was, originally, going to have a ranking system, variables weighed, scored neighborhoods.  This was controversial, so they didn't do that.</p>
+
+<p><strong>Implementation</strong></p>
+
+<p>Pam and Harry decided to use GIS.  They created a table, based on census block groups. No one in city could decide on neighborhood boundaries.  "lets do census level" so there would be no controversy". tabulated the data, built this doc, and then said "we've done ARCGIS explorer, why not interactive?"</p>
+
+<p>Pam and Harry built this whole thing, based on 2012 data.  Some data is a "snapshot" of data on one day.  Crime rates for the whole year, for example, were tabulated from
+annual rates.  We were ready with data in roughly March.</p>
+
+<blockquote>
+  <p>"let's go live!"</p>
+</blockquote>
+
+<p>They got push back.</p>
+
+<p>They wanted to make sure that the format made sense.  They tested the tool with various neighborhood groups and got lots of feedback - Everyone liked it.  After a few weeks, they got the green light to move forward.</p>
+
+<p><strong>"It's basic, we're not super technical, and we're using a Free Software for now."</strong> -Pam</p>
+
+<p>There's no "live feed" with data, and that is okay.  Explorer is a free client, anyone can go to ESRI, pull down csv's of data, and build your own maps for free.  That
+being said, it is severely limited. They are going to stop supporting it in December - it will be paid only.  Pam talked with their new coordinator, who says we'll be getting the paid version soon.  It has more functionality, but will still be basic because neighborhood groups will be the target audience.</p>
+
+<p><strong>Demo</strong></p>
+
+<p>Raw Notes:</p>
+
+<ul>
+<li>3 components:
+<ul><li>click and identify
+<ul><li>search by address</li></ul></li>
+<li>Aggregating up to a larger level
+<ul><li>shift+select multiple block groups</li>
+<li>created a dashboard, which we manually created each thing shown here.</li>
+<li>We did ones we though most peoples would ask for. it will aggregate things, or give a sum. it will also average... we wanted to do median.</li>
+<li>ESRI does average, we did median during our information gathering... some city data is available as city data, which was newer. We used</li>
+<li>RCSD for # of school kids, instead of census, as it is more accurate.</li>
+<li>we foiled most of this data ourselves, or it was pulled from NBD data we had available. Assessment dept does a daily snapshot, we have the address of the parcel, and the mailing address. if they are different, we assume it is a rental property.</li>
+<li>Monroe crime analysis center
+<ul><li>state funded, shared city/county resource</li>
+<li>city/state/sheriff budgets for diff things, comes out of year</li>
+<li>IMPACT grant</li></ul></li></ul></li></ul></li>
+</ul>
+
+<p><strong>Wrap-up</strong></p>
+
+<p>The tool's data will be updated in February 2013. Want to add "change" for next year, so users can see diff between this year and last.  We had requests, but we didn't want to use data that we hadn't collected ourselves.  We'll probably lump it into 4
+year spreads.</p>
+
+<p>Pam and Harry want to overlay diff variables on each other in the future.  You can't do that with this software, but with full version in the future, maybe later.</p>
+
+<p>They created a "base map" for every variable. You can flip through it, but you can't change the colors in a piece of paper (obv).</p>
+
+<p>More GIS data here: <a href="http://cityofrochester.gov/gis">http://cityofrochester.gov/gis</a></p>
+
+<p>You can contact Pam and Harry here: neighborhooddata@cityofrochester.gov</p>
+						</div>
+					</div>
+				</div>
+				<div class="footer">
+					Timothy Duffy | timduffy.me | 2013 | <a href="https://github.com/thequbit/timduffy.me">Source Code</a>
+				</div>
+			</div>
+			
+			<div class="sidebar" id="sidebar">
+				<div class="widget" id="twitterwidget">
+					<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+					<script>
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+
+</body>
+</html>

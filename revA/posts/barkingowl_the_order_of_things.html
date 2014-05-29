@@ -1,0 +1,151 @@
+<html>
+<head>
+
+	<title>TimDuffy.Me - Blog - BarkingOwl - The Order Of Things</title>
+
+	<meta name="keywords" content="barkingowl, dispatcher, archiver, crawler, design, civic, opensource">
+
+	<link href="../css/main.css" rel="stylesheet" type="text/css">
+
+	<link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
+
+	<link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+	<div id="header">
+		<div class="insideheader">
+			<div class="sitetitle">
+				<a href="/index.html">TimDuffy.Me</a>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="/index.html">Home</a>
+					</li>
+					<li>
+						<a href="/blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="/projects.html">Projects</a>
+					</li>
+					<li>
+						<a href="/about.html">About</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div class="main" id="main">
+		<div class="innermain" id="innermain">
+			<div class="section">
+				<div class="content" id="content">
+					<div class="post">
+						<div class="posttitle">BarkingOwl - The Order Of Things</div>
+						<div class="postdatetime">November 15th, 2013</div>
+						<div class="keywords">Keywords: barkingowl, dispatcher, archiver, crawler, design, civic, opensource</div>
+						<div class="postcontent">
+<p>The next step part to define in the <a href="https://github.com/thequbit/BarkingOwl">BarkingOwl</a> architecture is defining the Dispatcher.  This is the third part in the BarkingOwl Design Series (<a href="http://timduffy.me/posts/barkingowl_architecture_design.html">one</a>, <a href="http://timduffy.me/posts/barkingowl_scraper_design.html">two</a>).</p>
+
+<p>The Dispatcher is responsible for interfacing to a database of URLs to be scraped, and telling the Scrapers within the system to crawl them.  The Dispatcher communicates with the database via a direct link, and to the Scrapers via the Message Bus.</p>
+
+<p>There needs to be a back-and-forth between the Dispatcher and the Scraper(s).  We need to define the order in which things need to happen in the system so we can better understand how the Dispatcher and the Scraper(s) will interact.</p>
+
+<ol>
+<li><p><strong>Launch the Dispatcher</strong></p>
+
+<ul><li>The Dispatcher needs to be the first part of the system to come online.  The Dispatcher will connect to the Message Bus and begin consuming messages (listening for messages on the Message Bus).</li>
+<li>The Dispatcher listens on the Message Bus for Scrapers to announce themselves.</li></ul></li>
+<li><p><strong>Launch the Scraper(s)</strong></p>
+
+<ul><li>The Scraper comes online and immediately announces it's state on the bus.  At this point the state will be 'idle', and thus is ready for a URL to be dispatched to it.</li>
+<li>In the event that the Scraper doesn't get issued a URL, it will rebroadcast it's availability every 30 seconds.</li></ul></li>
+<li><p><strong>Launch the Archiver</strong></p>
+
+<ul><li>More on it's task(s) later, but it only consumes - it does not broadcast any messages to the Message Bus.</li></ul></li>
+<li><p><strong>Respond to Availability Broadcast</strong></p>
+
+<ul><li>The Scraper will broadcast an Availability Broadcast payload to the Message Bus.  The Dispatcher will consume this message, and response with a URL-To-Scrape payload.
+<ul><li>Since every message is asynchronous and broadcast with no acknowledgement of receipt, the Dispatcher will keep track of how long a Scraper will expect Watch Dog ticks back from the Scraper.  More on this when we define the Dispatcher.</li></ul></li></ul></li>
+<li><p><strong>Begin Scraping</strong></p>
+
+<ul><li>The Scraper will consume the URL-To-Scrape payload that is issued to it (the Dispatcher will use the 'destinationid' field within the payload to direct the message to the correct Scraper.</li>
+<li>The Scraper will look at the payload's 'message' field to pull out the URL and it's meta data.</li></ul></li>
+<li><p><strong>Broadcast Found Documents</strong></p>
+
+<ul><li>Within the URL-To-Scrape payload is the URL to be scraped as well as the type of document to look for.  The Scraper will, every time it finds one of the document types it is supposed to be looking for, will broadcast a Document-Found payload to the bus.</li>
+<li>Any client (Plugin) can consume the messages on the Message Bus.  What the consumer does witht he data, is up to it and is not defined within the BarkingOwl system.</li></ul></li>
+<li><p><strong>Broadcast Scraper Success</strong></p>
+
+<ul><li>Once the Scraper is done with scraping the URL it has been assigned, it needs to tell the Dispatcher as well as the Archiver.
+<ul><li>This is the first time we are really working with the Archiver.  Since it is not very well defined yet, let's just say that it is the keeper of the Scraper(s) status (such as when the Scraper has run, what URL it scraped, its successes and failures, etc.).</li></ul></li></ul></li>
+<li><p><strong>Rinse and Repeat</strong></p>
+
+<ul><li>Once the Scraper has completed scraping the URL it was dispatched, it broadcasts it's availability on the bus and waits for the Dispatcher to send another URL-To-Scrape payload to it to start on.</li></ul></li>
+</ol>
+
+<h3>The Dispatcher</h3>
+
+<p>The Dispatcher acts as the interface between the Database that holds the URLs (and their Meta Data) and the Scrapers that will scrape them.</p>
+
+<p>The Dispatcher needs to fulfill these tasks:</p>
+
+<ol>
+<li><p>Pull URLs and URL meta data from the Database</p>
+
+<ul><li>This can be done each time a request comes in, or based on a time period (ie. every 24 hours).</li>
+<li>I will be using another tool I wrote called <a href="https://github.com/thequbit/sql2api">sql2api</a> to interface between Python and the Database.</li></ul></li>
+<li><p>Dispatch URL-To-Scrape payloads to Scrapers</p>
+
+<ul><li>The Dispatcher will take the URL and it's meta data and serialize it to the 'message' part of the payload.</li></ul></li>
+<li><p>Record the last time a URL has been scraped</p>
+
+<ul><li>I believe it is important to keep track of the Scraper(s) successes and failures, however this data will be kept within the Archivers database.  I am going to keep this requirement in for now, but I don't think it will be implemented in the first go-around. </li></ul></li>
+</ol>
+
+<p>I have thought that it would be nice to have one of the things that the Dispatcher handles is how often the URL is scraped.  Now, this could be a global value set for the entire system, or it could be set per-URL.  For now, I believe setting the value globally shall be sufficient - but i can see where that could be a waste of bandwidth in certain applications.</p>
+
+<p>The Database for the Dispatcher will be MySQL based.  The database will be loaded by a separate entity other than the Dispatcher (such as a small web framework allowing for a simple HTTP JSON API).</p>
+
+<h3>The Archiver</h3>
+
+<p>The Archiver is responsible for consuming all messages on the bus and keeping track of them.  A great way to think of the Archiver is simply a system-wide log file.  Due to the variability of the 'message' portion of a message payload, we will be using a NoSQL database to save the contents to, in this case MongoDB.</p>
+
+<p>This is, for those who have read the previous posts in this series, different then the original architecture I defined in post <a href="http://timduffy.me/posts/barkingowl_architecture_design.html">one</a>.  A big part of this design series is backing up and checking the design decisions that I made when starting the project.  In this particular case, it makes a lot more sense to use the flexibility of data types and values within a MongoDB rather than be forced into the rigidity of an SQL database.</p>
+
+<p>The other thing you will notice is that the Archiver and the Dispatcher no longer share the same database.  This divorce was intentional, as the Dispatcher's requirements for the Database is much different than that of the Archiver.</p>
+
+<p>The Archiver will simply consume all messages on the Message Bus and push them to the MongoDB for latter consumption.  If there is a desire to view/review/mine the data within the MongoDB database, then a separate connection/interface must be used.</p>
+
+<p><strong>Note:</strong> The system does not require the use of the Archiver, it simply is a diagnostic and debug tool.</p>
+
+<h3>What's Next</h3>
+
+<p>Next step is to start putting it all together!  The next post, hopefully, will be a status update on my successes and failures in implementing the system that I have defined.  I believe I have just about all of the parts I need to implement a first revision of the base system with no Plugins.</p>
+						</div>
+					</div>
+				</div>
+				<div class="footer">
+					Timothy Duffy | timduffy.me | 2013 | <a href="https://github.com/thequbit/timduffy.me">Source Code</a>
+				</div>
+			</div>
+			
+			<div class="sidebar" id="sidebar">
+				<div class="widget" id="twitterwidget">
+					<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+					<script>
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+
+</body>
+</html>

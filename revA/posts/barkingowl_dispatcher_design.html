@@ -1,0 +1,407 @@
+<html>
+<head>
+
+	<title>TimDuffy.Me - Blog - BarkingOwl Dispatcher Design</title>
+
+	<meta name="keywords" content="barkingowl, dispatcher, design series, part IV, opensource">
+
+	<link href="../css/main.css" rel="stylesheet" type="text/css">
+
+	<link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
+
+	<link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+	<div id="header">
+		<div class="insideheader">
+			<div class="sitetitle">
+				<a href="/index.html">TimDuffy.Me</a>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="/index.html">Home</a>
+					</li>
+					<li>
+						<a href="/blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="/projects.html">Projects</a>
+					</li>
+					<li>
+						<a href="/about.html">About</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div class="main" id="main">
+		<div class="innermain" id="innermain">
+			<div class="section">
+				<div class="content" id="content">
+					<div class="post">
+						<div class="posttitle">BarkingOwl - Dispatcher Design</div>
+						<div class="postdatetime">November 17th, 2013</div>
+						<div class="keywords">Keywords: barkingowl, dispatcher, design series, part IV, opensource</div>
+						<div class="postcontent">
+<p>I am a big fan of writing SQL to interface to and design the database.  This is why I wrote <a href="https://github.com/thequbit/sql2api">sql2api</a>.  The tool allows you to write SQL to define a MySQL database and from that generate a python object-based interface to the database.</p>
+
+<p>I spoke briefly about using <a href="http://www.sqlalchemy.org/">SQLAlchemy</a> with BarkingOwl in this <a href="http://timduffy.me/posts/syracuse_hacks_and_hackers_meetup.html">post</a>.  I've played a bit with the library since writing that post, and I just am not a fan of it.  Now I do believe one of the main reasons for this was my rather limit understanding of Python and my limited object oriented programming experience.  Plus, I like SQL so removing myself from that portion of the database doesn't really make sense to me :p.</p>
+
+<h3>Dispatcher Database Design</h3>
+
+<p>First, let's design some tables:</p>
+
+<pre><code>CREATE TABLE IF NOT EXISTS doctypes(
+    doctypeid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    title CHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    doctype CHAR(255) NOT NULL
+);
+
+CREATE INDEX doctypes_doctypeid ON doctypes(doctypeid);
+CREATE INDEX doctypes_doctype ON doctypes(doctype);
+
+CREATE TABLE IF NOT EXISTS urls(
+    urlid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    targeturl TEXT NOT NULL,
+    maxlinklevel INT NOT NULL,
+    creationdatetime DATETIME NOT NULL,
+    doctypeid INT NOT NULL,
+    FOREIGN KEY (doctypeid) REFERENCES doctypes(doctypeid)
+);
+
+CREATE INDEX urls_urlid ON urls(urlid);
+</code></pre>
+
+<p>What we have here are two tables that hold enough information to get a basic Dispatcher up and running.  Let's take a look at what we have.</p>
+
+<ul>
+<li><p><strong>urls</strong></p>
+
+<ul><li>urlid
+<ul><li>The unique ID of the row in the urls table.  This will be important as it will be unique to each URL within the BarkingOwl instance.</li></ul></li>
+<li>targeturl
+<ul><li>This is the URL that the Scraper should scrape (ex. '<a href="http://www.townofchili.org/">http://www.townofchili.org/</a>')</li></ul></li>
+<li>maxlinklevel
+<ul><li>This is the maximum number of links to follow.  From what I have seen levels of more than 3 can become extremely large bandwidth and can consume a LOT of time.  In some of my tests that I ran I saw as many as 50,000 links followed when setting the level of 5 on a SINGLE URL.</li></ul></li>
+<li>creationdatetime
+<ul><li>The Date and Time of when the URL entry was entered in the Database.</li></ul></li>
+<li>doctypeid
+<ul><li>This is the ID in the other table in the Database.</li>
+<li>This is the type of the document that the Scraper should be looking for while scraping.  We will be doing a JOIN within the SQL query to get this data into a single response.</li></ul></li></ul></li>
+<li><p><strong>doctypes</strong></p>
+
+<ul><li>doctypeid
+<ul><li>The unique ID of the row in the doctypes table.  This is referenced by the <strong>urls</strong> table.</li></ul></li>
+<li>title
+<ul><li>A Title for the document type.  An example would be 'Adobe PDF'.</li></ul></li>
+<li>description
+<ul><li>A brief description of the document type (specifically useful if the doc type is not a well known standard, or preparatory).</li></ul></li>
+<li>doctype
+<ul><li>The actual document type.  This will be the exact text that is returned by the magic library.  An example would be 'application/pdf'.</li></ul></li></ul></li>
+</ul>
+
+<h3>Create Database Accessers Using sql2api</h3>
+
+<p>Now that we have the tables defined, and we know what each part does, we can push the SQL into the sql2api tool.</p>
+
+<p>Note: I added these two files at the beginning of the database creation script so the sql2api tool knows what the Database is called and it can be used right by MySQL.</p>
+
+<pre><code>CREATE DATABASE IF NOT EXISTS bodispatcherdb;
+USE bodispatcherdb;
+</code></pre>
+
+<p>Now, let's pass the file into the sql2api tool:</p>
+
+<pre><code>$ python sql2api.py dispatcher.sql
+[INFO] Parsing SQL ...
+[INFO] Database Name: bodisparcherdb
+[INFO] Found Table: `urls` with 5 columns
+[INFO] Found Table: `doctypes` with 4 columns
+[INFO] Generating Python Files ...
+[INFO]  ./bodisparcherdb/python/models/__dbcreds__.py
+[INFO]  ./bodisparcherdb/python/models/Urls.py
+[INFO]  ./bodisparcherdb/python/models/Doctypes.py
+[INFO]  ./bodisparcherdb/python/models/__init__.py
+[INFO] Generating PHP Files ...
+[INFO]  ./bodisparcherdb/php/UrlsManager.class.php
+[INFO]  ./bodisparcherdb/php/DoctypesManager.class.php
+[INFO]  ./bodisparcherdb/php/sqlcredentials.php
+[INFO]  ./bodisparcherdb/php/getall.php
+
+Application exiting ...
+</code></pre>
+
+<p>You will notice that, at least using the version of the tool that was available at the time of this blog post, that sql2api spits out python as well as PHP code.  We will only be using the Python code for the Dispatcher.</p>
+
+<p>Let's take a look at the files that were created.  First, the file system tree that was created was:</p>
+
+<pre><code>bodisparcherdb/
+  python/
+    models/
+      __dbcreds__.py
+      Urls.py
+      Doctypes.py
+      __init__.py
+</code></pre>
+
+<p>The four files that are created are described as below:</p>
+
+<ul>
+<li>__dbcreds__.py
+<ul><li>This holds the database credentials.  This holds four variables
+<ul><li>__username__ = '' # the username for the MySQL database</li>
+<li>__password__ = '' # the password for the MySQL database</li>
+<li>__database__ = '' # the name of the database, here it is bodispatcherdb</li>
+<li>__server__ = '' # this is the server name or IP address</li></ul></li></ul></li>
+<li>Urls.py
+<ul><li>This holds the class that allows access to the <strong>urls</strong> table</li></ul></li>
+<li>Doctypes.py
+<ul><li>This holds the class that allows access to the <strong>doctypes</strong> table</li></ul></li>
+<li>__init__.py
+<ul><li>This is called when the calling python script imports the directory that all of these files are in.</li>
+<li>This tries to connect to the database using the credentials, and initializes the classes that allow access to the tables in the database.</li></ul></li>
+</ul>
+
+<h3>Create Database and Tables in MySQL</h3>
+
+<p>Now that we have the Access Classes generated, we can create the database within our MySQL instance.</p>
+
+<pre><code># mysql -u root -p &lt; dispatcher.sql
+
+# mysql -u root -p  
+mysql&gt; use bodispatcherdb;
+mysql&gt; grant usage on bodispatcherdb.* to bouser identified by '&lt;password&gt;';
+mysql&gt; grant all privileges on bodispatcherdb.* to bouser;
+mysql&gt; show columns from urls;
++------------------+----------+------+-----+---------+----------------+
+| Field            | Type     | Null | Key | Default | Extra          |
++------------------+----------+------+-----+---------+----------------+
+| urlid            | int(11)  | NO   | PRI | NULL    | auto_increment |
+| targeturl        | text     | NO   |     | NULL    |                |
+| maxlinklevel     | int(11)  | NO   |     | NULL    |                |
+| creationdatetime | datetime | NO   |     | NULL    |                |
+| doctypeid        | int(11)  | NO   | MUL | NULL    |                |
++------------------+----------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql&gt; show columns from doctypes;
++-------------+-----------+------+-----+---------+----------------+
+| Field       | Type      | Null | Key | Default | Extra          |
++-------------+-----------+------+-----+---------+----------------+
+| doctypeid   | int(11)   | NO   | PRI | NULL    | auto_increment |
+| title       | char(255) | NO   |     | NULL    |                |
+| description | text      | NO   |     | NULL    |                |
+| doctype     | char(255) | NO   | MUL | NULL    |                |
++-------------+-----------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+
+mysql&gt;
+</code></pre>
+
+<p>Now, we probably want to do permissions differently in production, but for now it will be sufficiant and will make debug a bit easier.  (Note: we will touch on Database security and design changes after this first version is complete.)</p>
+
+<h3>Database Access from Python</h3>
+
+<p>Let's quickly look at how we would go about using the created tables.</p>
+
+<pre><code>from models import *
+
+def geturls():
+    urls = Urls()
+    urllist = urls.getall()
+    return urllist
+
+def printurls(urllist):
+    for url in urls:
+        # urlid,targeturl,maxlinklevel,creationdatetime,doctypeid = url
+        print url
+
+def main():
+    urllist = geturls()
+    printurls(urllist)
+
+main()
+</code></pre>
+
+<p>The above code will import the models created by sql2api, and allow access to the Urls class which, in turn, allows access to the Urls table within the MySQL database.  The getall() function is built into each class generated by sql2api by default.  The printurls() function then just iterates through and prints all of the information from the row in the Database.  Note how each tuple in the array holds 5 items (the same 5 items that are in the table).</p>
+
+<h3>Creating a New Database Accesser</h3>
+
+<p>Since it's impossible for the sql2api to know all of way queries we want to perform, as we come up with them we need to add Accessor.  Luckily sql2api places a nice little template at the end of each file it creates on how to add an Accessor, there for creating one is simple!</p>
+
+<p>First, we need to define our query with the JOIN so we can get the information from both tables into a single response.</p>
+
+<pre><code>SELECT
+  urls.urlid as urlid,
+  urls.targeturl as targeturl,
+  urls.maxlinklevel as maxlinklevel,
+  urls.creationdatetime as creationdatetime,
+  doctypes.title as doctypetitle,
+  doctypes.description as docdescription,
+  doctypes.doctype as doctype
+FROM 
+  urls 
+JOIN
+  doctypes 
+ON
+  urls.doctypeid = doctypes.doctypeid;
+</code></pre>
+
+<p>The above SQL select everything we are interested in across both the urls and the doctypes tables.  Next we need to place that into an Accesser function with our Urls class within Urls.py.</p>
+
+<p>Let's look at our Accesser function:</p>
+
+<pre><code>def getallurldata(self):
+    try:
+        con = self.__connect()
+        with con:
+            cur = con.cursor()
+            cur.execute("""
+                        SELECT
+                          urls.urlid as urlid,
+                          urls.targeturl as targeturl,
+                          urls.maxlinklevel as maxlinklevel,
+                          urls.creationdatetime as creationdatetime,
+                          doctypes.title as doctypetitle,
+                          doctypes.description as docdescription,
+                          doctypes.doctype as doctype
+                        FROM
+                          urls
+                        JOIN
+                          doctypes
+                        ON
+                          urls.doctypeid = doctypes.doctypeid;
+                        """)
+            rows = cur.fetchall()
+            cur.close()
+        _urls = []
+        for row in rows:
+            _urls.append(row)
+        con.close()
+    except Exception, e:
+        raise Exception("sql2api error - getall() failed with error:\n\n\t{0}".format(e))
+    return _urls
+</code></pre>
+
+<p>We can see the large SQL query in the middle of the function.  The query is passed into the cursor within the connection to the MySQL database (note: we connect at the beginning of the function, and use the connection and cursor throughout the function).  At the end of the function we iterate through the response and place the data into a list of tuples.</p>
+
+<p>Now we can call the getallurldata() function and get all of the meta data that we need to pass to the Scraper. </p>
+
+<h3>The Dispatcher</h3>
+
+<p>Now that we have the Database defined, the Message Bus defined, and the Dispatcher payload defined we can put it all together into a single class:</p>
+
+<pre><code>import pika
+import simplejson
+import uuid
+
+from models import *
+
+class Dispatcher():
+
+    def __init__(self,address='localhost',exchange='barkingowl'):
+        # create our uuid
+        self.uid = uuid.uuid1()
+
+        self.address = address
+        self.exchange = exchange
+
+        #setup message bus
+        self.reqcon = pika.BlockingConnection(pika.ConnectionParameters(host=address))
+        self.reqchan = self.reqcon.channel()
+        self.reqchan.exchange_declare(exchange=exchange,type='fanout')
+        result = self.reqchan.queue_declare(exclusive=True)
+        queue_name = result.method.queue
+        self.reqchan.queue_bind(exchange=exchange,queue=queue_name)
+        self.reqchan.basic_consume(self.reqcallback,queue=queue_name,no_ack=True)
+				
+        self.respcon = pika.BlockingConnection(pika.ConnectionParameters(
+		                                           host=self.address))
+        self.respchan = self.respcon.channel()
+        self.respchan.exchange_declare(exchange=self.exchange,type='fanout')
+
+    def geturls(self):
+        urls = Urls()
+        allurls = urls.getallurldata()
+        return allurls
+
+    def start(self):
+        self.urls = self.geturls()
+        self.urlindex = len(self.urls)-1
+        print "Listening for messages on Message Bus ..."
+        self.reqchan.start_consuming()
+
+    def sendurl(self,url,destinationid):
+        urlid,targeturl,maxlinklevel,creationdatetime,doctypetitle,docdescription,doctype = url
+        isodatetime = strftime("%Y-%m-%d %H:%M:%S")
+        packet = {
+            'urlid': urlid,
+            'targeturl': targeturl,
+            'maxlinklevel': maxlinklevel,
+            'creationdatetime': creationdatetime,
+            'doctypetitle': doctypetitle,
+            'docdescription': docdecription,
+            'doctype': doctype,
+            'disparchdatetime': isodatetime,
+        }
+        payload = {
+            'command': 'url_dispatch',
+            'sourceid': self.uid,
+            'destinationid': destinationid,
+            'message': simplejson.dumps(packet)
+        }
+        jbody = simplejson.dumps(payload)
+        respchan.basic_publish(exchange=exchange,routing_key='',body=jbody)
+    # message handler
+    def reqcallback(self,ch,method,properties,body):
+        response = simplejson.loads(body)
+        print "Processing Message:\n\n\t{0}".format(response)
+        if response['command'] == 'scraperavailable':
+            if len(self.urlindex) == -1:
+                self.urls = self.geturls()
+            self.sendurl(self.urls[self.urlindex],response['sourceid'])
+            print "URL dispatched to '{0}'".format(response['sourceid'])
+
+def main():
+    print "BarkingOwl Dispatcher Starting."
+    dispatcher = Dispatcher(address='localhost',exchange='barkingowl')
+    dispatcher.start()
+    print "BarkingOwl Dispatcher Exiting."
+
+main()
+
+</code></pre>
+
+<h3>What's Next?</h3>
+
+<p>Next we need to polish up the Scraper, and write a simple Plugin to prove that everything is working!  Stay tuned for part V in the BarkingOwl Design Series.</p>
+						</div>
+					</div>
+				</div>
+				<div class="footer">
+					Timothy Duffy | timduffy.me | 2013 | <a href="https://github.com/thequbit/timduffy.me">Source Code</a>
+				</div>
+			</div>
+			
+			<div class="sidebar" id="sidebar">
+				<div class="widget" id="twitterwidget">
+					<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+					<script>
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+
+</body>
+</html>

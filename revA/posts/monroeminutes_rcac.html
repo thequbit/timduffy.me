@@ -1,0 +1,278 @@
+<html>
+<head>
+
+	<title>TimDuffy.Me - Blog - Rochester Civic Apps Challenge</title>
+
+	<meta name="keywords" content="monroe,minutes,attroc,monroeminutes,opensource,rcac">
+
+	<link href="../css/main.css" rel="stylesheet" type="text/css">
+
+	<link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
+
+	<link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+	<div id="header">
+		<div class="insideheader">
+			<div class="sitetitle">
+				<a href="/index.html">TimDuffy.Me</a>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="/index.html">Home</a>
+					</li>
+					<li>
+						<a href="/blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="/projects.html">Projects</a>
+					</li>
+					<li>
+						<a href="/about.html">About</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div class="main" id="main">
+		<div class="innermain" id="innermain">
+			<div class="section">
+				<div class="content" id="content">
+					<div class="post">
+						<div class="posttitle">Rochester Civic Apps Challenge</div>
+						<div class="postdatetime">February 25th, 2014</div>
+						<div class="keywords">Keywords: monroe,minutes,attroc,monroeminutes,opensource,rcac</div>
+						<div class="postcontent">
+<h2>MonroeMinute System Overview</h2>
+
+<p>On Friday the 21st of February I had the pleasure of spending several hours at the RIT MAGIC center for the AT&amp;T Rochester Civic Apps Challenge kick-off hackathon.  The event was sponsored by AT&amp;T, Digital Rochester, High Tech Rochester, and Hack Upstate - and run by the best guy in the bizz, <a href="https://github.com/decause">Remy DeCausemaker</a>.</p>
+
+<p><center><img src="https://raw.github.com/rochestercivicappchallenge/resources/master/badges/attroc-badge.png" alt="enter image description here" title=""></center></p>
+
+<p>I decided that I would submit MonroeMinutes to the 'existing applications' category.  Below is a full system overview of the different parts of the MonroeMinutes system that I was able to finalize at the hackathon.</p>
+
+<p>You can check out my previous work on MonroeMinutes <a href="http://timduffy.me/posts/monroe_minutes_design.html">Design</a> and <a href="http://timduffy.me/posts/monroe_minutes_flow.html">Flow</a>.  The system continues to change over time - but I think for the better!</p>
+
+<h2>Parts</h2>
+
+<p>Here is a high-level diagram of the differnet parts of the MonroeMInutes system.</p>
+
+<p><center><img src="http://timduffy.me/posts/media/mm_parts.png" alt="enter image description here" title=""></center></p>
+
+<p><em><strong>Database</strong></em></p>
+
+<p>The database within the MonroeMinutes system is <a href="http://www.mongodb.org/">MongoDB</a>.  The MongoDB database is a NoSQL database that holds information about the entities within Monroe County (Towns, Villages, and Cities), Organizations within those entities (A Town Board or Zoning Board), Documents (found PDF, their text, and meta data), as well as some information about the system health and users.  Here are the schemes for each collection within the database:</p>
+
+<p>The entities collection holds information about each Town, Village, and City within Monroe County.  Here is an example entry:</p>
+
+<pre><code>entity = {
+    "_id": "530c00586c5bc4160b2e9132",
+    "website": "http://www.townofbrighton.org/",
+    "name": "Town of Brighton",
+    "description": "Brighton, NY"
+    "creationdatetime": "2014-02-24 21:30:48",
+    "orgs": [
+        "53085f0ea70f9e0e63aeb15a",
+        "507f191e810c19729de860ea",
+        "507f1f77bcf86cd799439011",
+    ]
+}
+</code></pre>
+
+<p>The organizations collection holds information about each of the organizations within an entity.  Note that an org does not know what entity it belongs to.  Also note that all strings within the matchtext array much exist within the document to successfully match.</p>
+
+<pre><code>org = {
+    "_id": "53085f0ea70f9e0e63aeb15a",
+    "name": 'Town Board",
+    "description": "Brighton Town Board",
+    "matchtext": [
+        "MINUTES OF TOWN BOARD MEETING",
+        "TOWN OF BRIGHTON"
+    ]
+}
+</code></pre>
+
+<p>The largest collection within the database is the documents collection.  This collection holds information about each found pdf document including it's full converted text.  Some things to note:</p>
+
+<ul>
+<li><p>The urldata is exactly what was passed to the scraper from the dispatcher (see dispatcher section below).</p></li>
+<li><p>Adobe, in all of their infinite wisdom, allowed the 'created' field within the PDF format to be free-form text, thus resulting in no defined format for the time/date of creation.  This field should not be used to determine ... anything.</p></li>
+<li><p>the pdfhash field is the MD5 hash of the pdftext field.</p></li>
+<li><p>the orgid and entityid are the ObjectId() within the MongoDB database of the entity and organization that the document belongs to.  Both are saved for simpler searching.</p></li>
+</ul>
+
+<p>A document looks like this:</p>
+
+<pre><code>doc = {
+    "_id": "530c00d16c5bc416257b4d3f",
+    "scrapedatetime": "2014-02-24 21:32:28",
+    "minutesdate": "",
+    "created": "",
+    "being_converted": false,
+    "converted": false,
+    "being_processed": false,
+    "processed": false
+    "filename": "Historic-Consultant.pdf",
+    "docurl": "http://www.brockportny.org/pdf/historic-preservation/Historic-Consultant.pdf",
+    "linktext": "View the Press Release",
+    "docname": "/mnt/sas/monroeminutes/downloads//Historic-Consultant.pdf_1393295569.1.download",
+    "pdftext": "",
+    "pdfhash": "",
+    "entityid": "530c00586c5bc4160b2e9133",
+    "orgid": "",
+    "urldata": {
+        "status": "running",
+        "maxlinklevel": 4,
+        "runs": [
+
+        ],
+        "description": "Brockport, NY",
+        "title": "Village of Brockport",
+        "scraperid": "ca7e00d7-f870-455a-8c60-98722e4f1a8d",
+        "doctype": "application/pdf",
+        "frequency": 10080,
+        "startdatetime": "2014-02-24 21:32:24",
+        "targeturl": "http://www.brockportny.org/",
+        "finishdatetime": "",
+        "entityid": "530c00586c5bc4160b2e9133",
+        "creationdatetime": "2014-02-24 21:31:10"
+    }
+}
+</code></pre>
+
+<p>Finally we save all of the scraper runs in the database.  This is used more for monitoring and administration/debug purposes.  We will be able to, however, generate some very cool statistics from this data.</p>
+
+<pre><code>run = {
+    "_id": "530c366c6c5bc416257b684e",
+    "bandwidth": 194555,
+    "startdatetime": "2014-02-24 22:41:26",
+    "linkcount": 1624
+    "urldata": {
+        "status": "running",
+        "maxlinklevel": 4,
+        "runs": [
+
+        ],
+        "description": "Webster, NY",
+        "title": "Village of Webster",
+        "scraperid": "30c0775d-fd8e-48b8-ae79-ca487251cbcc",
+        "doctype": "application/pdf",
+        "frequency": 10080,
+        "startdatetime": "2014-02-24 22:40:48",
+        "targeturl": "http://www.villageofwebster.com/",
+        "finishdatetime": "",
+        "entityid": "530c00586c5bc4160b2e914b",
+        "creationdatetime": "2014-02-24 21:31:10"
+    },
+    "badlinks": [
+        "mailto:amchampagne@villageofwebster.com"
+    ],
+    "processed": [
+
+        ... links processed here ...
+
+    ],
+
+} 
+</code></pre>
+
+<p>Now that we have outlined the database design, and what it holds, we can move onto how each part of the system creates and uses that data.</p>
+
+<p><em><strong>Dispatcher</strong></em></p>
+
+<p>The dispatcher is responsible for listening for scraper requests ( more on the scraper shortly).  The Dispatcher listens for scrapers broadcasting on the message bus that they are available to begin scraping a website.</p>
+
+<p>When the dispatcher is launched, it reads the list of entities from the database.  Within each entity exists a website URL (see above for the entity definition).  When a scrape comes online and broadcasts its availability, the dispatcher will send it one of those entity URLs.</p>
+
+<p>There exists a 'frequency' field within the entity entry within the database.  This is the number of minutes between when the scraper should be dispatched to this website.  If the website has been scraped, and the about of time is less than the frequency field, then the URL is not dispatched.  This functionality is built into BarkingOwl.</p>
+
+<p><em><strong>Scraper</strong></em></p>
+
+<p>The scrape is where the BarkingOwl scalability comes in.  You can launch as many scrapers as you need (within reason ... I've launched 256 of them on a single box and it got a bit interesting).</p>
+
+<p>The MonroeMinutes scraper is consists of the following code:</p>
+
+<pre><code>from barking_owl import ScraperWrapper
+
+if __name__ == '__main__':
+    print " -- Monroe Minutes Scraper --"
+    exchange = "monroeminutes"
+    try:
+        sw = ScraperWrapper(exchange=exchange,DEBUG=True)
+        sw.start()
+    except:
+        print "Monroe Minutes Scraper Exiting ..."
+</code></pre>
+
+<p>It is exceptionally small, and leverages all of it's power from the BarkingOwl framework.  Since the BarkingOwl scraper caries all of the 'non-required meta data' along for the ride, there is no need to wrap the scraper in any more than what you see above.</p>
+
+<p>The scraper with broadcast to the bus each time it finds a document.  It will broadcast all of the information that the dispatcher gave it, as well as the URL of the found document.  This brings us to the next part of our system:</p>
+
+<p><em><strong>Archiver</strong></em></p>
+
+<p>The archiver is the third and final sub-system that sits on the RabbitMQ message bus.  The archiver is in change of listening on the bus for new documents, and loading them into the database as well as downloading them.  The flow is as follows:</p>
+
+<p>First, it listens on the bus.  Then:</p>
+
+<ol>
+<li>Receive a new document message</li>
+<li>Download the PDF</li>
+<li>Save the documents meta data to the database</li>
+</ol>
+
+<p>The archiver is simply just saving off the documents to disk, and then saving information about them to the database (their URL, where they are on disk, when they were found, their entity id, etc).  See the document definition above for more information.</p>
+
+<p><em><strong>Document Converter</strong></em></p>
+
+<p>The document converted is responsible for going to the MongoDB database and seeing if any new documents have arrived from the archiver.  The database is being used as a queue in this case.  The archiver loads new documents into the database after it downloads them.  The converter then comes along and attempts to covert the PDF to text.</p>
+
+<p>The separation of the task of conversion (as well as processing which we will see in the Document Processor section) from the archiver is one focused on scalability.  If the MonroeMinutes system was to be run on, say something the size of all of New York state, you are going to need some serious scalability.  The goal of the BarkingOwl and the MonroeMinutes architectures is to maximize scalability.</p>
+
+<p>The converter subsystem leverages the <a href="https://pypi.python.org/pypi/unpdfer/">unpdfer</a> library.  The unpfer library is a small wrapper around a specific version of <a href="https://pypi.python.org/pypi/pdfminer/20110515">pdfminer</a>.</p>
+
+<p>The converter converts the PDF document to text using unpdfer, places the full text into the mongodb database, and then saves the text to a file store.</p>
+
+<p><em><strong>Document Processor</strong></em></p>
+
+<p>The final step of the process is the document processor.  The processor is in charge of determining which organization within an entity the document belongs to, and passes the 'completed' document to <a href="http://www.elasticsearch.org/">Elastic Search</a> where it is indexed.  Once indexed, the document is then searchable.</p>
+
+<p>Once the processor is done with identifying the organization, it saves the organizations id to the document.  After this the document will show up in searches on the website.</p>
+
+<p><em><strong>Flask Web Application</strong></em></p>
+
+<p>The interface to the world for Monroe Minutes is via a simple <a href="http://flask.pocoo.org/">Flask</a> web application.  As much of the system as possible is accessible via API.  This was done to maximize the functionality of the site, and the usability of it's data.</p>
+
+<h2>What's Next!?</h2>
+
+<p>The document parser is rather 'dumb' at the moment.  I believe the answer will be to use machine learning to automatically classify documents to their organizations based on learned models of them.  This has not yet been implemented however.</p>
+
+<p>At the time of this blog post, the system has run across the top-level domains of <strong>27 Towns, Villages, and Cities</strong> within Monroe County, NY, producing <strong>12,104 PDF documents</strong>, which consume <strong>18.166GB</strong> of data.  The next step is to incrementally convert, and then process the documents.</p>
+						</div>
+					</div>
+				</div>
+				<div class="footer">
+					Timothy Duffy | timduffy.me | 2013 | <a href="https://github.com/thequbit/timduffy.me">Source Code</a>
+				</div>
+			</div>
+			
+			<div class="sidebar" id="sidebar">
+				<div class="widget" id="twitterwidget">
+					<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+					<script>
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<html>
+<head>
+
+	<title>TimDuffy.Me - Blog - Monroe Minutes Design</title>
+
+	<meta name="keywords" content="Monroe, County, NY, MonroeMinutes, BarkingOwl, opensource, opendata">
+
+	<link href="../css/main.css" rel="stylesheet" type="text/css">
+
+	<link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
+
+	<link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+	<div id="header">
+		<div class="insideheader">
+			<div class="sitetitle">
+				<a href="/index.html">TimDuffy.Me</a>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="/index.html">Home</a>
+					</li>
+					<li>
+						<a href="/blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="/projects.html">Projects</a>
+					</li>
+					<li>
+						<a href="/about.html">About</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div class="main" id="main">
+		<div class="innermain" id="innermain">
+			<div class="section">
+				<div class="content" id="content">
+					<div class="post">
+						<div class="posttitle">Monroe Minutes Design</div>
+						<div class="postdatetime">December 23rd, 2013</div>
+						<div class="keywords">Keywords: Monroe, County, NY, MonroeMinutes, BarkingOwl, opensource, opendata</div>
+						<div class="postcontent">
+<h2>Monroe Minutes</h2>
+
+<p>In August of 2012 I came up with an idea that I called 'Monroe Minutes'.  I wanted to scrape all of the towns, villages, cities websites' within Monroe County, NY and pull down all of their meeting minutes to make them searchable from a single portal.  It was a rather ambitious project, but I thought it was a meaningful one.</p>
+
+<p>If you check the commit logs on the github <a href="https://github.com/thequbit/monroeminutes">repo</a> you can see that the first commit was on December 3rd, 2012.  This was the date of one of my very first hackathons, Random Hacks of Kindness.  This event was run locally by Remy DeCausemaker, and went off without a hitch!  You can learn more about RHoK <a href="http://rhok.org">here</a> and <a href="http://en.wikipedia.org/wiki/Random_Hacks_of_Kindness">here</a>.</p>
+
+<p>I have written about Monroe Minutes before in a few posts, specificly the Barking Owl Series (<a href="http://timduffy.me/posts/barkingowl_architecture_design.html">Part I</a>, <a href="http://timduffy.me/posts/barkingowl_scraper_design.html">Part II</a>, <a href="http://timduffy.me/posts/barkingowl_the_order_of_things.html">Part III</a>, <a href="http://timduffy.me/posts/barkingowl_dispatcher_design.html">Part IV</a>, <a href="http://timduffy.me/posts/barkingowl_working_code.html">Part V</a>).  <a href="https://github.com/thequbit/BarkingOwl">BarkingOwl</a> was a venture into a reusable tool that would assist me in writing powerful web scrapers.  My first attempt to use BarkingOwl as the underlying technology in a project is with Monroe Minutes.</p>
+
+<h3>What is Monroe Minutes</h3>
+
+<p>My goal for Monroe Minutes was to create a portal for anyone to search for keywords and phrases within all meeting minutes from the various groups, organizations, and government agencies within Monroe County, NY.</p>
+
+<p>It is always a goal to create things that are reusable, however sometimes that requirement drives more of your development time than the actual thing you are trying to create.  When this happens its important to step back, and make sure what you are spending your time on is really worth your while.</p>
+
+<p>With Monroe Minutes, my first attempt was a very naive attempt at a web scraper that needed to be pointed to a specific page to pull PDF documents off of.  Not a terrible start, but very labor intensive to setup, since every single page on all town websites that contained PDF documents needed to be found.  The other short fall of this attempt was using <a href="http://nltk.org/">nltk</a> (Natural Language Tool Kit) to generate a histogram of words, and then use that list of words to perform the search.  Although it did produce results, ranking was nearly impossible.</p>
+
+<p>After almost half a year of fiddling with code here and there (feel free to check the commit logs on the repo, you can see I go hot and cold pretty regularly), I was re-inspired by a journalist out of the more southern part of the state (Binghamton south, not NYC south).  He wanted to look for keywords in real-time within meeting minutes.  He had communicated his need(s) well, and was super passionate about how helpful it would be.</p>
+
+<p>I was re-energized, I was going to break out some of the important parts of Monroe Minutes, and try and apply them to the problem.</p>
+
+<h3>PDFImp</h3>
+
+<p>The next big step in the evaluation of Monroe Minutes, was a tool I called <a href="https://github.com/thequbit/pdfimp">PDFImp</a>.  PDFImp was the third generation of web scraper that was the heart of the Monroe Minutes scraper.  The tool would be a stand-alone scraper that would be pointed at a URL, and return a list of all PDF documents that it found.</p>
+
+<p>There were some issues with the method I chose:</p>
+
+<ul>
+<li>The tool did not return the PDF list until it was complete.</li>
+<li>It held all of the information for the PDF (including all of its text) in memory
+<ul><li>This means that with a site that was hundreds of PDFs, you could be eating up GB of memory.</li></ul></li>
+<li>The scraper wasn't very smart, it would look at the same page multiple times</li>
+</ul>
+
+<p>Not a bad start.  In initial tests, the tool worked well.  It really thrashed the site that it was looking at since it wasn't smart enough not to look at the same page more than once, but over all not too bad.  The biggest part of PDFImp that I didn't like was the fact that it didn't spit anything out until it had scraped the ENTIRE site.  In one test it visisted 50,000 links, however there were only 40 or so pages on the entire site ...</p>
+
+<h3>Barking Owl - revA</h3>
+
+<p>Barking Owl started as the 'answer' to implement the solution to the 'meeting minutes phrase detection' problem presented to me earlier in the summer of 2013.  I was going to call PDFImp with information from a database, and put a web front-end on it.  I was ready to push out a site within a weekend!</p>
+
+<p>Aaaaand then I got into the code.  I realized that there was just so many sites to scrape, I was going to need a much more scalable solution than a single-threaded python script.  I realized I needed a way to spin up threads to do both scraping and PDF processing.  This was the first time I got around to looking at lots of sites at the same time, and what I saw was the PDF-&gt;Text processor hammering on the processor and pausing the script for, sometimes, minutes.</p>
+
+<p>The first commit to the BarkingOwl repo is August 6th, 2013.  There is a branch called 
+'working_revA' that essentially pulling urls from a database and pushing them to PDFImp.  Not the most elegant solution, but it <em>does</em> work.</p>
+
+<h3>Barking Owl - revB</h3>
+
+<p>The next version of BarkingOwl was a complete redesign, and was a culmination of lots of learning experience.  You can read all about how it works in the 5 part design series i linked above.</p>
+
+<p>What I have added to BarkingOwl is the ability to call it as a library and extent its functionality, rather than just interact with it via the RabbitMQ bus.  This has been incredibly successful in using it to implement Monroe Minutes, as it prevented a lot of code being written, as well as reduced overhead on the system that can be used for PDF conversion and URL scraping.</p>
+
+<p>The current version of BarkingOwl uses all of the topics mentioned in the BarkingOwl Design Series, and is currently working much better than I expected :p</p>
+
+<h3>The Design</h3>
+
+<p>The design of Monroe Minutes is very similar to BarkingOwl with a few small additions:</p>
+
+<center>
+<p><img src="http://timduffy.me/posts/media/monroeminutesarch.png" alt="Monroe Minutes Design" title=""></p>
+</center>
+
+<p>The introduction of ElasticSearch allows for robust, fast indexing, and solves the issue that using the nltk histograms could not in the previous version(s).</p>
+
+<h3>Monroe Minutes - The Parts</h3>
+
+<p>There are a few parts to Monroe Minutes</p>
+
+<ul>
+<li><p><strong>monroeminutes_dispatcher.py</strong></p>
+
+<ul><li>This extends the barkingowl_dispatcher.py script.</li>
+<li>This script pulls URLs from the database, and serves them up to the RabbitMQ bus as scrapers become available.</li></ul></li>
+<li><p><strong>monroeminutes_scraper.py</strong></p>
+
+<ul><li>This extends the barkingowl_scraper.py script.</li>
+<li>This script listens for a URL to be sent to it via the RabbitMQ bus.  It then scrapes that URL and broadcasts and PDF documents it finds to the RabbitMQ bus.</li></ul></li>
+<li><p><strong>monroeminutes_archiver.py</strong></p>
+
+<ul><li>This uses the same method of interfacing to the RabbitMQ bus as the diagoutput example from BarkingOwl.</li>
+<li>This script listens on the RabbitMQ bus for new PDF documents.  Once seen, it converts them to text, and pushes their meta data to the database and their full text to <a href="http://www.elasticsearch.org/">ElasticSearch</a> to be indexed.</li></ul></li>
+<li><p><strong>monroeminutes_shutdown.py</strong></p>
+
+<ul><li>This uses the GlobalShutdown class within BarkingOwl to shutdown the entire MonroeMinutes system.
+<ul><li>Note: at the time of this blog post, the scraper needs to complete scraping before exiting.  Not entirely sure why this is happening at the moment - it's logged as an issue in BarkingOwl.</li></ul></li></ul></li>
+<li><p><strong>monroeminutes_web.py</strong></p>
+
+<ul><li>This script provides a web interface to the ElasticSearch index and various meta data within the database.</li></ul></li>
+</ul>
+
+<h3>What's Next?</h3>
+
+<p>The next step will be to fully design the database as well as defined what is passed to ElasticSearch.</p>
+
+<p>The database needs to hold enough information about the county and it's various bodies and organizations.  It needs to be determined still how the data should be split between elastic search and the sql database.</p>
+						</div>
+					</div>
+				</div>
+				<div class="footer">
+					Timothy Duffy | timduffy.me | 2013 | <a href="https://github.com/thequbit/timduffy.me">Source Code</a>
+				</div>
+			</div>
+			
+			<div class="sidebar" id="sidebar">
+				<div class="widget" id="twitterwidget">
+					<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+					<script>
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+
+</body>
+</html>

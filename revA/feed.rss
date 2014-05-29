@@ -4,63 +4,126 @@
   <title>TimDuffy.Me Blog</title>
   <description>A Collection of My Thoughts</description>
   <link>http://timduffy.me/blog.html</link>
-  <lastBuildDate>Fri, 15 Nov 2013 11:15:00 -0500</lastBuildDate>
+  <lastBuildDate>Tue, 25 Feb 2014 19:40:00 EST</lastBuildDate>
   <ttl>3600</ttl>
+  
+  <item>
+    <title>Rochester Civic Apps Challenege</title>
+    <description>Working on Monroe Minutes for the Rochester Civic Apps Challenge</description>
+    <link>http://timduffy.me/posts/monroeminutes_rcac.html</link>
+    <pubDate>Tue, 25 Feb 2014 19:40:00 EST</pubDate>
+  </item>
+  
+  <item>
+    <title>Buying a House</title>
+    <description>An Exercise in Understanind the Costs of Buying a House</description>
+    <link>http://timduffy.me/posts/buying_a_house.html</link>
+    <pubDate>Sat, 18 Jan 2014 08:00:00 EST</pubDate>
+  </item>
+  
+  <item>
+    <title>Monroe Minutes Flow</title>
+    <description>Data flow for Monroe Minutes</description>
+    <link>http://timduffy.me/posts/monroe_minutes_flow.html</link>
+    <pubDate>Tue, 24 Dec 2013 08:00:00 EST</pubDate>
+  </item>
+  
+  <item>
+    <title>Monroe Minutes Design</title>
+    <description>Design and Architecture of Monroe Minutes using BarkingOwl</description>
+    <link>http://timduffy.me/posts/monroe_minutes_design.html</link>
+    <pubDate>Mon, 23 Dec 2013 08:00:00 EST</pubDate>
+  </item>
+  
+  <item>
+    <title>RHoK 2013 Rochester, NY Objective Task List</title>
+    <description>A high level task list based on my idea for this years RHoK 2013 in Rochester, NY</description>
+    <link>http://timduffy.me/posts/rhok_2013_tasks.html</link>
+    <pubDate>Mon, 2 Dec 2013 08:00:00 EST</pubDate>
+  </item>
+  
+  <item>
+    <title>Random Hacks of Kindness Idea</title>
+    <description>My idea for this years RHoK 2013 in Rochester, NY</description>
+    <link>http://timduffy.me/posts/rhok_idea.html</link>
+    <pubDate>Thu, 21 Nov 2013 08:00:00 EST</pubDate>
+  </item>
+  
+  <item>
+    <title>BarkingOwl -Working Code!</title>
+    <description>BarkingOwl Arch Reword and Working Code!</description>
+    <link>http://timduffy.me/posts/barkingowl_working_code.html</link>
+    <pubDate>Mon, 18 Nov 2013 08:00:00 EST</pubDate>
+  </item>
+  
+  <item>
+    <title>BarkingOwl - Dispatcher Design</title>
+    <description>BarkingOwl Dispatcher Design, plus code!</description>
+    <link>http://timduffy.me/posts/barkingowl_dispatcher_design.html</link>
+    <pubDate>Sun, 17 Nov 2013 08:00:00 EST</pubDate>
+  </item>
+  
+  <item>
+    <title>BarkingOwl - The Order of Things</title>
+    <description>BarkingOwl Dispatcher and Archiver Design</description>
+    <link>http://timduffy.me/posts/barkingowl_the_order_of_things.html</link>
+    <pubDate>Fri, 15 Nov 2013 22:00:00 EST</pubDate>
+  </item>
+  
+  <item>
+    <title>Hacks and Hackers Rochester Meetup - Neighborhood Data Map</title>
+    <description>Hacks and Hackers November 2013 Meetup</description>
+    <link>http://timduffy.me/posts/hhroc_meetup_neighborhood_data_map.html</link>
+    <pubDate>Fri, 15 Nov 2013 20:00:00 EST</pubDate>
+  </item>
   
   <item>
     <title>BarkingOwl Scraper Design</title>
     <description>Part II of the BarkingOwl Design Series</description>
-	<link>>http://timduffy.me/posts/barkingowl_scraper_design.html</link>
-	<guid>6</guid>
-	<pubDate>2013-11-14</pubDate>
+    <link>http://timduffy.me/posts/barkingowl_scraper_design.html</link>
+    <pubDate>Thu, 14 Nov 2013 08:00:00 EST</pubDate>
   </item>
   
   <item>
     <title>BarkingOwl Architecture Design</title>
     <description>Part I of the BarkingOwl Design Series</description>
-	<link>>http://timduffy.me/posts/barkingowl_architecture_design.html</link>
-	<guid>5</guid>
-	<pubDate>2013-11-13</pubDate>
+    <link>http://timduffy.me/posts/barkingowl_architecture_design.html</link>
+    <pubDate>Wed, 13 Nov 2013 08:00:00 EST</pubDate>
   </item>
   
   <item>
     <title>Election Data Polling</title>
     <description>Polling NYS Proposals on Election Night</description>
-	<link>>http://timduffy.me/posts/election_data_polling.html</link>
-	<guid>4</guid>
-	<pubDate>2013-11-05</pubDate>
+    <link>http://timduffy.me/posts/election_data_polling.html</link>
+    <pubDate>Tue, 5 Nov 2013 19:00:00 EST</pubDate>
   </item>
   
   <item>
     <title>Election Night Hackathon</title>
     <description>Election Night Hackathon Overview and Ballot Breakdown</description>
-	<link>>http://timduffy.me/posts/election_night_hackathon.html</link>
-	<guid>3</guid>
-	<pubDate>2013-11-05</pubDate>
+    <link>http://timduffy.me/posts/election_night_hackathon.html</link>
+    <pubDate>Tue, 5 Nov 2013 21:00:00 EST</pubDate>
   </item>
   
   <item>
     <title>US Budget Data Part 1</title>
     <description>Working with US 2014 Budget Data - Part 1</description>
-	<link>>http://timduffy.me/posts/us_budget_data_part_1.html</link>
-	<guid>2</guid>
-	<pubDate>2013-10-31</pubDate>
+    <link>http://timduffy.me/posts/us_budget_data_part_1.html</link>
+    <pubDate>Thu, 31 Oct 2013 08:00:00 EST</pubDate>
   </item>
   
   <item>
     <title>September 2013 Syracuse Hacks and Hackers Meetup</title>
     <description>Breif Summary of my time at the September 2013 HHCuse meetup</description>
-	<link>>http://timduffy.me/posts/syracuse_hacks_and_hackers_meetup.html</link>
-	<guid>1</guid>
-	<pubDate>2013-09-05</pubDate>
+    <link>http://timduffy.me/posts/syracuse_hacks_and_hackers_meetup.html</link>
+    <pubDate>Thu, 5 Sep 2013 08:00:00 EST</pubDate>
   </item>
   
   <item>
     <title>First Blog Post</title>
     <description>FIRST!!!!1!!</description>
-	<link>>http://timduffy.me/posts/first_blog_post.html</link>
-	<guid>0</guid>
-	<pubDate>2013-09-01</pubDate>
+    <link>http://timduffy.me/posts/first_blog_post.html</link>
+    <pubDate>Sun, 1 Sep 2013 08:00:00 EST</pubDate>
   </item>
   
 </channel>

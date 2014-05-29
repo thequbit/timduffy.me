@@ -1,0 +1,124 @@
+<html>
+<head>
+
+	<title>TimDuffy.Me - Blog - BarkingOwl - Working Code!</title>
+
+	<meta name="keywords" content="barkingowl, scraper, dispatcher, working, code, opensource">
+
+	<link href="../css/main.css" rel="stylesheet" type="text/css">
+
+	<link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
+
+	<link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+	<div id="header">
+		<div class="insideheader">
+			<div class="sitetitle">
+				<a href="/index.html">TimDuffy.Me</a>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="/index.html">Home</a>
+					</li>
+					<li>
+						<a href="/blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="/projects.html">Projects</a>
+					</li>
+					<li>
+						<a href="/about.html">About</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div class="main" id="main">
+		<div class="innermain" id="innermain">
+			<div class="section">
+				<div class="content" id="content">
+					<div class="post">
+						<div class="posttitle">BarkingOwl - Working Code!</div>
+						<div class="postdatetime">Novermber 18th, 2013</div>
+						<div class="keywords">Keywords: barkingowl, scraper, dispatcher, working, code, opensource</div>
+						<div class="postcontent">
+<p>After posting on the BarkingOwl Dispatcher, and successfully implementing a rough cut, I felt I needed to revisit the Scraper and do the same.</p>
+
+<p>One of the things that I wanted for the Scraper(s) was for a 'status' Plugin to be written that would allow for near real-time statics for all Scrapers running within the system.  This means that I need to be able to broadcast a status from the Scraper based on a timer tick, or when a request broadcast comes in.  For the first implementation here I think I am going to do the latter, and have the ability to respond to a 'status' request payload.</p>
+
+<h3>Wrapper Design</h3>
+
+<p>The design that I am going with will be a small amount of wrapper code that will be able to respond to messages, broadcast messages, and launch the actual scraper code.  The scraper code will then have the ability to only broadcast (for telling the Message Bus that it found a document).</p>
+
+<p>The ScraperWrapper needs to be able to do the following:</p>
+
+<ul>
+<li><p>Broadcast 'scraperavialable' status payloads to the Message Bus (consumed by the Dispatcher)</p>
+
+<ul><li>This happens on load and after a URL is scraped.</li></ul></li>
+<li><p>Respond to 'url_dispatch' payloads from the Dispatcher</p>
+
+<ul><li>This is send to the unique ID of the scraper, thus the ScraperWraper must be the code that generates this ID.</li></ul></li>
+<li><p>Respond to 'scraperstatus' payloads broadcasts</p>
+
+<ul><li>This will fill the message section of the payload with a serialized dictionary of status information.</li></ul></li>
+</ul>
+
+<h3>Scraper Design</h3>
+
+<p>The scraper will be a class, and will be its own thread.  This will be accomplished by using the Threading library available within Python.  The Scraper Thread will run next to the ScraperWrapper main Thread.  The ScraperWrapper class will, when sent a 'scraper_status' payload, read values out of the Scraper Thread and report them back to the bus.</p>
+
+</br>
+<hr>
+<p><em>So I got so excited while writing this post, that I just went a head and implemented the code base for this first version.  See below!</em></p>
+<hr>
+</br>
+
+<h3>Putting it all Together</h3>
+
+<p>You can see the Dispatcher Code <a href="https://github.com/thequbit/BarkingOwl/blob/master/revB/dispatcher/barkingowl-dispatcher.py">here</a></p>
+
+<p>You can see the Scraper Code <a href="https://github.com/thequbit/BarkingOwl/blob/master/revB/scraper/scraper.py">here</a>.  The ScraperWrapper <a href="https://github.com/thequbit/BarkingOwl/blob/master/revB/scraper/scraperwrapper.py">here</a>.</p>
+
+<p>The current repo head is <a href="https://github.com/thequbit/BarkingOwl/tree/master/revB">here</a>.</p>
+
+<h3>What's Next</h3>
+
+<ul>
+<li>I need to cleanup the Scraper Thread when it is done scraping.</li>
+<li>Need to test the status request Message</li>
+<li>Need to write a test Plugin!</li>
+<li>Rework the Dispatcher database to support multiple doctypes for a single URL</li>
+</ul>
+
+<p>Stay tuned for more to come!</p>
+						</div>
+					</div>
+				</div>
+				<div class="footer">
+					Timothy Duffy | timduffy.me | 2013 | <a href="https://github.com/thequbit/timduffy.me">Source Code</a>
+				</div>
+			</div>
+			
+			<div class="sidebar" id="sidebar">
+				<div class="widget" id="twitterwidget">
+					<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+					<script>
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+
+</body>
+</html>

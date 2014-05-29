@@ -1,0 +1,187 @@
+<html>
+<head>
+
+	<title>TimDuffy.Me - Blog - Monroe Minutes Flow</title>
+
+	<meta name="keywords" content="Monroe, County, MonroeMinutes, Flow, BarkingOwl, opendata, opensource">
+
+	<link href="../css/main.css" rel="stylesheet" type="text/css">
+
+	<link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
+
+	<link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+
+</head>
+<body>
+
+	<div id="header">
+		<div class="insideheader">
+			<div class="sitetitle">
+				<a href="/index.html">TimDuffy.Me</a>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="/index.html">Home</a>
+					</li>
+					<li>
+						<a href="/blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="/projects.html">Projects</a>
+					</li>
+					<li>
+						<a href="/about.html">About</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div class="main" id="main">
+		<div class="innermain" id="innermain">
+			<div class="section">
+				<div class="content" id="content">
+					<div class="post">
+						<div class="posttitle">Monroe Minutes Flow</div>
+						<div class="postdatetime">December 23rd, 2013</div>
+						<div class="keywords">Keywords: Monroe, County, MonroeMinutes, Flow, BarkingOwl, opendata, opensource</div>
+						<div class="postcontent">
+                            <h3>Monroe Minutes Database Design</h3>
+
+                            <p>The Monroe Minutes system is built using BarkingOwl.  The BarkingOwl subsystem is simply fed data, it does not directly interface with any kind of database.  Therefore, part of the MonroeMinutes wrapper around BarkingOwl needs to have some kind of data container within it - in this case it will be a MySQL database.</p>
+
+                            <p>The organization that I have picked is one of two tiers: <em>bodies</em> and <em>organizations</em>.  Bodies are entities such as towns, villages, hamlets, and cities.  Organizations are groups such as Town Boards, Zoning Boards, and Planning Boards.  A <em>body</em> can hold multiple <em>organizations</em> in this configuration.</p>
+
+                            <p>Let's look at some SQL:</p>
+
+                            <pre><code>CREATE TABLE IF NOT EXIST bodies(
+                                bodyid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                name CHAR(255) NOT NULL,
+                                description TEXT NOT NULL,
+                                creationdatatime DATETIME NOT NULL
+                            );
+                            CREATE INDEX bodies_bodyid ON bodies(bodyid);
+                            </code></pre>
+
+                            <p>Since a <em>body</em> is the high level in the tree, it does not reference anything.</p>
+
+                            <p>Let's look at the SQL for an organization:</p>
+
+                            <pre><code>CREATE TABLE IF NOT EXISTS orgs(
+                                orgid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                name CHAR(255) NOT NULL,
+                                description TEXT NOT NULL,
+                                creationdatetime DATETIME NOT NULL,
+                                matchtext TEXT NOT NULL,
+                                urlid INT NOT NULL,
+                                FOREIGN KEY (urlid) REFERENCES url(urlid),
+                                bodyid INT NOT NULL,
+                                FOREIGN KEY (bodyid) REFERENCES bodies(bodyid)
+                            );
+                            CREATE INDEX orgs_orgid ON orgs(orgid);
+                            </code></pre>
+
+                            <p>Since an <em>organization</em> "belongs" to a <em>body</em>, it references it within the database.</p>
+
+                            <p>There is a column within the orgs database called 'matchtext'.  The matchtext is a phrase that should be used to determine what organization within a body a document belongs to.  There are, of course, some issues with this particular method of matching, however I believe it is an appropriate one based on the use cases.</p>
+
+                            <p>One of my biggest hopes for Monroe Minutes is that it is used by citizens all over Monroe County and New York State to become more informed about what is going on in their town and county, and thus make more informed decisions when voting (as well as other things).  My second biggest hopes for Monroe Minutes is for the tool to be used by others all over the US and the world to do the same for their communities.</p>
+
+                            <p>Since not everyone will be a regex and sql master, the goal is for anyone to type in a string that could be matched and to have the tool do the 'magic' behind the scene.  My goal is to have this text be something such as "Planning Board" or "Town Board" or "Town of Scottsville".  This text, with some serious regex power, will be used to match to the first "section" of the PDf.  I would assume this would be the first 4096, or 8192 characters of the document, but this will take some experimentation to get perfect.</p>
+
+                            <p>Note that there also is a reference to a urlid within the orgs table.  The other part of the database is the list of URLs.  Since multiple organizations could reference the same URL (think the town board, the planning board, and the zoning board of Henrietta will all point to <a href="http://henrietta.org/">http://henrietta.org/</a>), we will have multiple organizations referencing the same urlid within the urls table.</p>
+
+                            <p>The SQL:</p>
+
+                            <pre><code>CREATE TABLE IF NOT EXISTS urls(
+                                urlid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                targeturl TEXT NOT NULL,
+                                title CHAR(255) NOT NULL,
+                                description TEXT NOT NULL,
+                                maxlinklevel INT NOT NULL,
+                                creationdatetime DATETIME NOT NULL,
+                                doctype CHAR(127) NOT NULL,
+                                frequency INT NOT NULL
+                            );
+                            CREATE INDEX urls_urlid ON urls(urlid);
+                            </code></pre>
+
+                            <p>The table holds a small amount of information, but gives the monroeminutes_dispatcher.py script and BarkingOwl library everything that it needs to pull pdf documents out of the URL.  Let's take a look at some of its parts:</p>
+
+                            <ul>
+                            <li><p>targeturl</p>
+
+                            <ul><li>This is the URL that the BarkingOwl scraper(s) will scrape.</li>
+                            <li>example: <a href="http://scottsville.org/">http://scottsville.org/</a></li></ul></li>
+                            <li><p>title</p>
+
+                            <ul><li>A meaningful title to be displayed</li></ul></li>
+                            <li><p>description</p>
+
+                            <ul><li>Any additional information that may be useful to attach to the URL</li></ul></li>
+                            <li><p>maxlinklevel</p>
+
+                            <ul><li>This is the maximum number of links that the BarkingOwl scraper will follow.  This is very important to get 'correct'.  The larger this number the longer the scraper will run, the longer it will take to get all of the PDF documents out of the URL, and the most bandwidth the scraper will take.  A level larger than 3 is <strong>strongly</strong> discouraged.</li></ul></li>
+                            <li><p>doctype</p>
+
+                            <ul><li>This is a very important field as it is a string that is directly compared within BarkingOwl.  This is the document type returned by the <a href="http://linux.die.net/man/3/libmagic">magic library</a> in Linux.  For PDF documents it is 'application/pdf'.  For HTML it is 'text/html'.</li></ul></li>
+                            <li><p>frequency</p>
+
+                            <ul><li>This is a number, in <strong>minutes</strong>, that tells the monroeminutes_dispatcher.py script how often it should dispatch the URL to the waiting scrapers.</li></ul></li>
+                            </ul>
+
+                            <h3>ElasticSearch</h3>
+
+                            <p>The other storage part of Monroe Minutes is <a href="http://www.elasticsearch.org/">ElasticSearch</a>.  I had originally thought that I would keep a list of all of the documents that were found within both the database and ElasticSearch, however that seems both unnecessarily redundant and dangerous.</p>
+
+                            <p>So, at least for now, I have decided for the contents in the MySQL database to be a single direction into the system, and document data one direction out of the system to ElasticSearch.  With each URL will then need to be sent all of the meta data for all organizations that is associated with it.  This does produce some additional overhead, however I think it is an elegant solution.</p>
+
+                            <h3>Flow</h3>
+
+                            <p>The flow of data looks like this:</p>
+
+                            <p><img src="http://timduffy.me/posts/media/monroeminutesflow.png" alt="Monroe Minutes Flow" title=""></p>
+
+                            <p>Data about <em>bodies</em>, <em>organizations</em>, and <em>urls</em> is loaded into the MySQL database, then passed into the BarkingOwl subsystem, then finally (after being processed) is passed into ElasticSearch to be indexed.</p>
+
+                            <h3>What's Next?</h3>
+
+                            <p>I need to rework how I was thinking of the data flow, as I was having the Archiver write data back to the database.  I also need to figure out what to do with docs that are not assigned to an organization (I think marking them as 'misfit' is appreciate for now).  I also need to work on the administration pages for the website.  And, finally, figure out how to search by organization and not within the entire ElasticSearch index.</p>
+						</div>
+                        
+                        <div class="comments">
+                            Want to discuss this topic?  Head over to G+ and comment!</br>
+                            <a href="https://plus.google.com/102020099265817740615/posts/gvP2t11ThZ9">Comments</a></br>
+                        </div>
+					</div>
+				</div>
+                
+				<div class="footer">
+					Timothy Duffy | timduffy.me | 2013 | <a href="https://github.com/thequbit/timduffy.me">Source Code</a>
+				</div>
+			</div>
+            
+            
+			
+			<div class="sidebar" id="sidebar">
+				<div class="widget" id="twitterwidget">
+					<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/arbiterofbits" data-widget-id="374218529756561408">Tweets by @arbiterofbits</a>
+					<script>
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+   
+
+</body>
+</html>
