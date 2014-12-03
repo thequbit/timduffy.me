@@ -46,7 +46,8 @@ div.sitetitle a{
 
 #header {
 	background: #474747;
-	min-width: 1220px;
+	/*min-width: 1220px;*/
+    min-width: 1060px;
 	display: block;
 	height: 70px;
 }
@@ -80,9 +81,9 @@ div.sitetitle a{
 }
 
 div.insideheader {
-	width: 1160px;
+	width: 1000px;
 	margin: 0 auto;
-	padding: 0 20px;
+	/*padding: 10px;*/
 }
 
 div.sitetitle {
@@ -96,22 +97,29 @@ div.sitetitle {
 
 /* -- content -- */
 
+div.bio-blurb {
+    border: 1px solid #474747;
+    font-size: 70%;
+    margin-left: 5px;
+    padding: 15px;
+}
+
 div.main {
-	width: 1220px;
+	width: 1060px;
 	background: #F5F5F5;
 	margin: auto;
 }
 
 div.innermain {
-	width: 1160px;
+	width: 1000px;
 	padding-top: 50px;
-	padding-left: 30px;
+	padding-left: 10px;
 	margin: 2px 2px 2px 2px;
 }
 
 div.section {
 	float: left;
-	width: 760px;
+	width: 600px;
 	overflow: hidden;
 }
 
