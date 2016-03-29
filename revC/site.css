@@ -1,0 +1,79 @@
+
+body {
+	font-family: 'Lato', sans-serif;
+	background: #FDFDFD;
+}
+
+a {
+	color: rgba(160, 32, 240, .6);
+}
+
+.front-page-header {
+	margin-top: 10rem;
+	margin-left: 10rem;
+}
+
+.subheader {
+	padding-top: 2rem;
+	padding-left: 0rem;
+}
+
+.front-page-links {
+	margin-top: 5rem;
+	margin-left: 30rem;
+	padding-left: 2rem;
+	border-left: 2px dashed #6f6f6f;
+}
+
+.dash {
+	padding-bottom: 1rem;
+}
+
+.front-page-link-wrapper {
+	margin-top: 5rem;
+}
+
+.front-page-links a {
+	font-size: 200%;
+}
+
+#front-page-link-about {
+	padding-left: 0rem;
+}
+
+#front-page-link-projects {
+	padding-left: 0rem;
+}
+
+#front-page-link-thoughts {
+	padding-left: 0rem;
+}
+
+#front-page-link-contact {
+	padding-left: 0rem;
+}
+
+/*.pages {
+	display: none;
+}*/
+
+.page {
+	display: none;
+	padding-top: 1rem;
+}
+
+.about-header {
+	margin-top: 5rem;
+}
+
+.header-title {
+	padding-bottom: 5rem;
+}
+
+.left-indent {
+	padding-left: 3rem;
+}
+
+.contact-container {
+	padding-left: 8rem;
+}
