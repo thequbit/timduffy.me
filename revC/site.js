@@ -26,14 +26,14 @@ var app = {
 
 	display_page: function(page) {
 		console.log('display_page()');
-		$('.page').hide(300);
+		$('.page').hide(100);
 		switch(page) {
 			case "home":
 			case "about":
 			case "projects":
 			case "thoughts":
 			case "contact":
-				$('#page-' + page).show(300);
+				$('#page-' + page).show(100);
 				break;
 			default:
 				location.hash = '#/home';

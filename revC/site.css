@@ -9,8 +9,8 @@ a {
 }
 
 .front-page-header {
-	margin-top: 10rem;
-	margin-left: 10rem;
+	margin-top: 2rem;
+	margin-left: 1rem;
 }
 
 .subheader {
@@ -20,7 +20,7 @@ a {
 
 .front-page-links {
 	margin-top: 5rem;
-	margin-left: 30rem;
+	margin-left: 10rem;
 	padding-left: 2rem;
 	border-left: 2px dashed #6f6f6f;
 }
@@ -30,11 +30,11 @@ a {
 }
 
 .front-page-link-wrapper {
-	margin-top: 5rem;
+	margin-top: 3rem;
 }
 
 .front-page-links a {
-	font-size: 200%;
+	font-size: 150%;
 }
 
 #front-page-link-about {
@@ -76,4 +76,90 @@ a {
 
 .contact-container {
 	padding-left: 8rem;
+}
+
+/* resume */
+
+
+li {
+	margin-left: 1rem;
+}
+
+p {
+	margin-left: .5rem;
+}
+
+table {
+	margin-left: .5rem;
+	margin-top: 1rem;
+	margin-bottom: .25rem;
+	/*margin-left: 1rem;*/
+	width: 100%;
+}
+
+td {
+	text-align: left;
+}
+
+.fa {
+	padding-right: 1rem;
+	font-size: 150%;
+}
+
+.fa-mobile {
+	font-size: 250%;	
+}
+
+/*.green {
+	color: #2e7061;
+}*/
+
+.box {
+	margin: 1.5rem;
+	padding: 2rem;
+	border: 2px dashed;
+}
+
+.red-box {
+	border-color: rgba(255, 0, 0, .5);
+}
+
+.green-box {
+	border-color: rgba(0, 255, 0, .5);
+}
+
+.blue-box {
+	border-color: rgba(0, 0, 255, .5);
+}
+
+.purple-box {
+	border-color: rgba(0, 0, 0, .5);	
+}
+
+.big-top-margin {
+	margin-top: 4rem;
+}
+
+.bigger-top-margin {
+	margin-top: 16rem;
+}
+
+.red {
+	color: #C23B22;
+}
+
+.green {
+	color: #03C03C;
+}
+
+.blue {
+	color: #779ECB;
+}
+
+.purple {
+	color: #966FD6;
+}
+
+.bottom-buffer {
+	margin-bottom: 1rem;
 }
